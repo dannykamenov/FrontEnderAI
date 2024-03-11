@@ -4,7 +4,7 @@ const Header = () => {
   return (
       <nav>
         <Link href="/">
-          Home
+          FrontEnderAI
         </Link>
         <Link href="/about">
           About

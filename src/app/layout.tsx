@@ -4,6 +4,7 @@ import "./globals.css";
 
 import Footer from "./components/Footer";
 import Header from "./components/Header";
+import ConvexClientProvider from "./ConvexClientProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,7 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Header />
-        <main>{children}</main>
+        <main><ConvexClientProvider>{children}</ConvexClientProvider></main>
         <Footer />
       </body>
     </html>
