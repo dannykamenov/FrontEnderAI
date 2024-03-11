@@ -27,9 +27,11 @@ export default function RootLayout({
           inter.variable
         )}
       >
-        <Header />
-          <ConvexClientProvider>{children}</ConvexClientProvider>
-        <Footer />
+        <ConvexClientProvider>
+          <Header />
+          {children}
+          <Footer />
+        </ConvexClientProvider>
       </body>
     </html>
   );
