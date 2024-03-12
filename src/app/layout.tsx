@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Montserrat } from "next/font/google";
 import "./globals.css";
 
 import Footer from "./statics/Footer";
@@ -7,7 +7,7 @@ import Header from "./statics/Header";
 import ConvexClientProvider from "./ConvexClientProvider";
 import { cn } from "@/lib/utils";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const inter = Montserrat({ subsets: ["latin"]});
 
 export const metadata: Metadata = {
   title: "Front Ender AI",
@@ -23,8 +23,8 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={cn(
-          "min-h-screen bg-slate-950 text-white font-sans",
-          inter.variable
+          "min-h-screen bg-slate-950 text-white",
+          inter.className
         )}
       >
         <ConvexClientProvider>
