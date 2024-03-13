@@ -2,7 +2,7 @@
 const Footer = () => {
     return (
       <footer>
-        <p>© 2024 Your Site Name</p>
+        <p>© FrontEnderAI, 2024 </p>
         {/* Add more footer content as needed */}
       </footer>
     );

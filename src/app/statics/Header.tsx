@@ -6,16 +6,14 @@ import {
   SignedIn,
   SignedOut,
   UserButton,
-  UserProfile,
-  useSession,
 } from "@clerk/nextjs";
 import Link from "next/link";
 
 const Header = () => {
   return (
-    <nav className="border-b p-5 flex justify-evenly  mx-auto items-center">
+    <nav className="border-b border-slate-400 p-5 flex justify-evenly  mx-auto items-center">
       <div>
-        <Link href="/">
+        <Link href="/" className="">
           &lt;/FrontEnder&gt; <sub>.ai</sub>
         </Link>
       </div>
@@ -24,7 +22,7 @@ const Header = () => {
         <Link href="/about" className="p-2 hover:text-slate-400 hover:transition-all">Pricing</Link>
         <Link href="/about" className="p-2 hover:text-slate-400 hover:transition-all">Updates</Link>
       </div>
-      <div className="flex ">
+      <div className="flex items-center ">
         <SignedOut>
           <SignInButton mode="modal" className="p-2 hover:text-slate-400 hover:transition-all">Login</SignInButton>
           <SignUpButton mode="modal">
@@ -32,10 +30,10 @@ const Header = () => {
           </SignUpButton>
         </SignedOut>
         <SignedIn>
+          <div className="pr-5"><UserButton /></div>
           <SignOutButton>
             <Button variant="destructive">Sign Out</Button>
           </SignOutButton>
-          <UserButton></UserButton>
         </SignedIn>
       </div>
     </nav>
