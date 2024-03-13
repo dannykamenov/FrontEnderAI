@@ -30,10 +30,10 @@ const Header = () => {
           </SignUpButton>
         </SignedOut>
         <SignedIn>
-          <div className="pr-5"><UserButton /></div>
-          <SignOutButton>
-            <Button variant="destructive">Sign Out</Button>
+        <SignOutButton>
+            <Button variant="cta">Dashboard</Button>
           </SignOutButton>
+          <div className="pl-5"><UserButton /></div>
         </SignedIn>
       </div>
     </nav>
