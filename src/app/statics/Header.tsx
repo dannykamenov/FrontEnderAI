@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import {
+  OrganizationSwitcher,
   SignInButton,
   SignOutButton,
   SignUpButton,
@@ -18,22 +19,45 @@ const Header = () => {
         </Link>
       </div>
       <div>
-        <Link href="/about" className="p-2 hover:text-slate-400 hover:transition-all">About</Link>
-        <Link href="/about" className="p-2 hover:text-slate-400 hover:transition-all">Pricing</Link>
-        <Link href="/about" className="p-2 hover:text-slate-400 hover:transition-all">Updates</Link>
+        <Link
+          href="/about"
+          className="p-2 hover:text-slate-400 hover:transition-all"
+        >
+          About
+        </Link>
+        <Link
+          href="/about"
+          className="p-2 hover:text-slate-400 hover:transition-all"
+        >
+          Pricing
+        </Link>
+        <Link
+          href="/about"
+          className="p-2 hover:text-slate-400 hover:transition-all"
+        >
+          Updates
+        </Link>
       </div>
       <div className="flex items-center ">
         <SignedOut>
-          <SignInButton mode="modal" className="p-2 hover:text-slate-400 hover:transition-all">Login</SignInButton>
+          <SignInButton
+            mode="modal"
+            className="p-2 hover:text-slate-400 hover:transition-all"
+          >
+            Login
+          </SignInButton>
           <SignUpButton mode="modal">
             <Button variant="cta">Get Started</Button>
           </SignUpButton>
         </SignedOut>
         <SignedIn>
-        <SignOutButton>
+          <SignOutButton>
             <Button variant="cta">Dashboard</Button>
           </SignOutButton>
-          <div className="pl-5"><UserButton /></div>
+          <div className="pl-5 flex gap-2">
+            {/* <OrganizationSwitcher /> - only when paid */}
+            <UserButton />
+          </div>
         </SignedIn>
       </div>
     </nav>
