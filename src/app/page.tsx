@@ -20,7 +20,7 @@ export default function Home() {
           </div>
         </div>
         <h1 className="text-6xl text-center text font-semibold leading-tight text-transparent bg-clip-text bg-gradient-to-br from-white to-blue-500 mt-3">
-          No Designers? No Problem! <br /> Craft and Code with Ease.
+          Putting an End to Your Front End Problems <br /> Craft and Code with Ease.
         </h1>
         <p className="text-slate-400 text-center w-3/6 mx-auto">
           Unleash Your Front End&apos;s Full Potential - Design Smarter, Not
