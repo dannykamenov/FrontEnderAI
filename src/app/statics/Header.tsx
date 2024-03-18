@@ -51,7 +51,9 @@ const Header = () => {
           </SignUpButton>
         </SignedOut>
         <SignedIn>
-          <Button variant="cta">Dashboard</Button>
+          <Button variant="cta">
+            <Link href="/dashboard">Dashboard</Link>
+          </Button>
           <div className="pl-5 flex gap-2">
             {/* <OrganizationSwitcher /> - only when paid */}
             <UserButton />
