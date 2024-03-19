@@ -110,7 +110,7 @@ export const getMe = query({
     if (!identity) {
       return null;
     }
-
+    
     const user = await getUser(ctx, identity.tokenIdentifier);
 
     if (!user) {

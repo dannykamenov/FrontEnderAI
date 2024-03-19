@@ -6,6 +6,7 @@ import Footer from "./statics/Footer";
 import Header from "./statics/Header";
 import ConvexClientProvider from "./ConvexClientProvider";
 import { cn } from "@/lib/utils";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Montserrat({ subsets: ["latin"]});
 
@@ -28,6 +29,7 @@ export default function RootLayout({
         )}
       >
         <ConvexClientProvider>
+          <Toaster />
           <Header />
           {children}
           <Footer />
