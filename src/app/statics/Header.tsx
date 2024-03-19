@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { clsx } from "clsx";
 
 const Header = () => {
   const pathname = usePathname();
@@ -26,19 +27,28 @@ const Header = () => {
         <div>
           <Link
             href="/projects"
-            className="p-2 hover:text-slate-400 hover:transition-all"
+            className={clsx("p-2 hover:text-slate-400 hover:transition-all", {
+              "border-slate-400 border-b text-slate-400": pathname === "/projects",
+            
+            })}
           >
             Projects
           </Link>
           <Link
             href="/teams"
-            className="p-2 hover:text-slate-400 hover:transition-all"
+            className={clsx("p-2 hover:text-slate-400 hover:transition-all", {
+              "border-slate-400 border-b text-slate-400": pathname === "/teams",
+            
+            })}
           >
             Teams
           </Link>
           <Link
             href="/my-community"
-            className="p-2 hover:text-slate-400 hover:transition-all"
+            className={clsx("p-2 hover:text-slate-400 hover:transition-all", {
+              "border-slate-400 border-b text-slate-400": pathname === "/my-community",
+            
+            })}
           >
             My Community
           </Link>

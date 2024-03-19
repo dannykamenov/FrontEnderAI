@@ -15,4 +15,18 @@ export default defineSchema({
           })
         ),
       }).index("by_tokenIdentifier", ["tokenIdentifier"]),
+    projects: defineTable({
+        name: v.string(),
+        description: v.string(),
+        image: v.string(),
+        orgId: v.string(),
+        userId: v.id("users"),
+        tasks: v.array(
+            v.object({
+                name: v.string(),
+                description: v.string(),
+                completed: v.boolean(),
+            })
+        ),
+      }).index("by_orgId_userId", ["orgId", "userId"])
 });
