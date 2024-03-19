@@ -25,6 +25,7 @@ export const createProject = mutation({
     image: v.optional(v.string()),
     orgId: v.string(),
     userId: v.id("users"),
+    progress: v.optional(v.string()),
     tasks: v.optional(
       v.array(
         v.object({
@@ -40,6 +41,7 @@ export const createProject = mutation({
         name: args.name,
         description: args.description,
         image: args.image,
+        progress: args.progress,
         orgId: args.orgId,
         userId: args.userId,
         tasks: args.tasks,

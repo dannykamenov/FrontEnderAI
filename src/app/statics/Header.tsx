@@ -24,7 +24,7 @@ const Header = () => {
             &lt;/FrontEnder&gt; <sub>.ai</sub>
           </Link>
         </div>
-        <div>
+        <div className="flex items-center">
           <Link
             href="/projects"
             className={clsx("p-2 hover:text-slate-400 hover:transition-all", {
@@ -77,7 +77,7 @@ const Header = () => {
             &lt;/FrontEnder&gt; <sub>.ai</sub>
           </Link>
         </div>
-        <div>
+        <div className="flex items-center">
           <Link
             href="/"
             className="p-2 hover:text-slate-400 hover:transition-all"
@@ -90,12 +90,12 @@ const Header = () => {
           >
             Pricing
           </Link>
-          <Link
+          <p
             href="/"
-            className="p-2 hover:text-slate-400 hover:transition-all"
+            className="p-2 text-slate-400 "
           >
-            Community
-          </Link>
+            <s>Community</s><sup className="ml-2">Coming Soon</sup>
+          </p>
         </div>
         <div className="flex items-center ">
           <SignedOut>

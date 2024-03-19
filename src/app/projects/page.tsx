@@ -21,13 +21,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
+import placeholder from "./placeholder.png";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
+import Image from "next/image";
 
 const formSchema = z.object({
   name: z.string().min(3).max(50),
@@ -71,6 +72,7 @@ export default function Projects() {
         description: values.description,
         orgId: orgId,
         userId: me._id ?? "skip",
+        progress: "In Progress",
       });
 
       form.reset();
@@ -80,20 +82,22 @@ export default function Projects() {
       toast({
         variant: "success",
         title: "Project Created",
-        description: "Your project has been created",
+        description:
+          "Congratulations! Your project has been created successfully!",
       });
     } catch (error) {
       toast({
         variant: "destructive",
         title: "Project Creation Failed",
-        description: "Your project could not be created",
+        description:
+          "Your project could not be created, please try again later.",
       });
     }
   }
 
   return (
     <div>
-      <h1>Projects</h1>
+      <h1 className="text-6xl text-center m-10">Projects</h1>
       <Dialog
         open={dialogOpen}
         onOpenChange={(isOpen) => {
@@ -150,18 +154,44 @@ export default function Projects() {
           </DialogHeader>
         </DialogContent>
       </Dialog>
-      {projects?.map((project) => (
-        <div key={project._id}>
-          <p>{project.name}</p>
-          <p>{project.description}</p>
-          <p>{project.userId}</p>
-        </div>
-      )) ?? (
-        <>
-          <Loader2 className="w-48 h-48"></Loader2>
-          <p>Fetching your projects...</p>
-        </>
-      )}
+      <div className="flex w-11/12 flex-wrap mx-auto justify-evenly">
+        {projects?.map((project) => (
+          <div className="basis-1/4 m-4 border border-slate-400 rounded-xl" key={project._id}>
+            <div className="grid items-start gap-4">
+              <Image
+                alt="Placeholder"
+                className="aspect-[16/9] rounded-lg object-cover"
+                height={225}
+                src={project.image ? project.image : placeholder}
+                width={400}
+              />
+              <div className="grid gap-1">
+                <h2 className="text-lg font-semibold">{project.name}</h2>
+              </div>
+              <div className="grid gap-1">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Project Status: {project.progress ? project.progress : "In Progress"}
+                </p>
+              </div>
+              <div className="grid gap-1">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Task Status: {project.tasks ? project.tasks.length : "No Tasks Yet"}
+                </p>
+              </div>
+              <div className="grid gap-1">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                Started: {new Date(project._creationTime).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+          </div>
+        )) ?? (
+          <>
+            <Loader2 className="w-48 h-48"></Loader2>
+            <p>Fetching your projects...</p>
+          </>
+        )}
+      </div>
     </div>
   );
 }

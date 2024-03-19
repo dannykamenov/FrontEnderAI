@@ -21,6 +21,7 @@ export default defineSchema({
     image: v.optional(v.string()),
     orgId: v.string(),
     userId: v.id("users"),
+    progress: v.optional(v.string()),
     tasks: v.optional(
       v.array(
         v.object({
