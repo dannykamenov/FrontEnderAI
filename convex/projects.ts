@@ -48,3 +48,17 @@ export const createProject = mutation({
         });
     },
 });
+
+export const getProjectById = query({
+    args: { _id: v.string() },
+    async handler(ctx, args) {
+        const project = await ctx.db
+            .query("projects")
+            .filter((q) => q.eq(q.field("_id"), args._id))
+            .first();
+        if (!project) {
+            throw new ConvexError("expected project to be defined");
+        }
+        return project;
+    },
+});

@@ -3,7 +3,7 @@ import Link from "next/link";
 const Footer = () => {
   return (
     <>
-      <footer className=" w-11/12 border-t border-slate-400 mx-auto">
+      <footer className=" w-full border-t border-slate-400 mx-auto">
         <div className="mt-8 w-11/12 mx-auto flex justify-evenly items-center mb-8">
           <p className="text-center">
             Copyright © FrontEnderAI, 2024. <br /> All rights reserved.

@@ -91,7 +91,6 @@ const Header = () => {
             Pricing
           </Link>
           <p
-            href="/"
             className="p-2 text-slate-400 "
           >
             <s>Community</s><sup className="ml-2">Coming Soon</sup>
