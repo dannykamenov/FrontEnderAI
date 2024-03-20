@@ -29,6 +29,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
 
 const formSchema = z.object({
   name: z.string().min(3).max(50),
@@ -156,7 +157,10 @@ export default function Projects() {
       </Dialog>
       <div className="flex w-11/12 flex-wrap mx-auto justify-evenly">
         {projects?.map((project) => (
-          <div className="basis-1/4 m-4 border border-slate-400 rounded-xl" key={project._id}>
+          <div
+            className="basis-1/4 m-4 border border-slate-400 rounded-xl"
+            key={project._id}
+          >
             <div className="grid items-start gap-4">
               <Image
                 alt="Placeholder"
@@ -165,31 +169,46 @@ export default function Projects() {
                 src={project.image ? project.image : placeholder}
                 width={400}
               />
-              <div className="grid gap-1">
-                <h2 className="text-lg font-semibold">{project.name}</h2>
+              <div className="grid gap-1 break-words text-wrap overflow-auto whitespace-pre-wrap">
+                <h2 className="text-lg font-semibold break-words text-wrap overflow-auto whitespace-pre-wrap px-3">
+                  {project.name}
+                </h2>
+              </div>
+              <div className="flex items-center">
+                <p className="text-xs text-gray-500 dark:text-gray-400 px-3">
+                  Project Status:{" "}
+                </p>
+                {project.progress ? (
+                  project.progress == "Building" ? (
+                    <Badge variant="secondary">Building</Badge>
+                  ) : project.progress == "Completed" ? (
+                    <Badge variant="success">Completed</Badge>
+                  ) : (
+                    <Badge variant="cta">In Progress</Badge>
+                  )
+                ) : (
+                  <Badge variant="cta">In Progress</Badge>
+                )}
               </div>
               <div className="grid gap-1">
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Project Status: {project.progress ? project.progress : "In Progress"}
+                <p className="text-xs text-gray-500 dark:text-gray-400 px-3">
+                  Task Status:{" "}
+                  {project.tasks ? project.tasks.length : "No Tasks Yet"}
                 </p>
               </div>
               <div className="grid gap-1">
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Task Status: {project.tasks ? project.tasks.length : "No Tasks Yet"}
-                </p>
-              </div>
-              <div className="grid gap-1">
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                Started: {new Date(project._creationTime).toLocaleDateString()}
+                <p className="text-xs text-gray-500 dark:text-gray-400 px-3 pb-4">
+                  Started:{" "}
+                  {new Date(project._creationTime).toLocaleDateString()}
                 </p>
               </div>
             </div>
           </div>
         )) ?? (
-          <>
+          <div className="w-full h-full flex m-auto flex-col items-center">
             <Loader2 className="w-48 h-48"></Loader2>
             <p>Fetching your projects...</p>
-          </>
+          </div>
         )}
       </div>
     </div>
