@@ -29,7 +29,7 @@ export default function RootLayout({
         )}
       >
         <ConvexClientProvider>
-          <Toaster />
+          <Toaster  />
           <Header />
           {children}
           <Footer />

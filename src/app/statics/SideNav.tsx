@@ -1,12 +1,13 @@
 
+import { Cog } from "lucide-react"
 import Link from "next/link"
 
-export default function SideNav() {
+export default function SideNav({projectId}: {projectId: string}) {
   return (
     <nav className="flex flex-col h-screen w-1/6 pt-6 pb-6 items-center px-2 md:px-4 gap-4 border-r border-slate-400 ">
       <Link
         className="flex items-center  rounded-lg border border-transparent/40 border-[#000] px-1 py-1 w-full text-base transition-colors hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-gray-50"
-        href="#"
+        href={`/projects/${projectId}`}
       >
         <HomeIcon className="h-5 w-5" />
         <span className="pl-3">Home</span>
@@ -35,10 +36,10 @@ export default function SideNav() {
       </Link>
       <Link
         className="flex items-center  rounded-lg border border-transparent/40 border-[#000] px-1 py-1 w-full text-base transition-colors hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-gray-50"
-        href="#"
+        href={`/projects/${projectId}/settings`}
       >
-        <UserIcon className="h-5 w-5" />
-        <span className="pl-3">Profile</span>
+        <Cog className="h-5 w-5" />
+        <span className="pl-3">Project Settings</span>
       </Link>
     </nav>
   )
@@ -127,30 +128,6 @@ function MessageSquareIcon(props) {
   )
 }
 
-
-function PackageIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m7.5 4.27 9 5.15" />
-      <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
-      <path d="m3.3 7 8.7 5 8.7-5" />
-      <path d="M12 22V12" />
-    </svg>
-  )
-}
-
-
 function UserIcon(props) {
   return (
     <svg
@@ -170,3 +147,4 @@ function UserIcon(props) {
     </svg>
   )
 }
+

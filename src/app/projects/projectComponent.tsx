@@ -30,10 +30,20 @@ import { useState } from "react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+  SelectGroup,
+  SelectLabel,
+} from "@radix-ui/react-select";
 
 const formSchema = z.object({
   name: z.string().min(3).max(50),
   description: z.string().min(3).max(1000),
+  frontend: z.string(),
 });
 
 export default function Projects() {
@@ -67,7 +77,9 @@ export default function Projects() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!orgId || !me) return;
 
-    try {
+    console.log(values);
+
+ /*    try {
       await createProject({
         name: values.name,
         description: values.description,
@@ -93,7 +105,7 @@ export default function Projects() {
         description:
           "Your project could not be created, please try again later.",
       });
-    }
+    } */
   }
 
   return (
@@ -120,7 +132,7 @@ export default function Projects() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Create Your Project</DialogTitle>
-              <Form {...form}>
+              <Form {...form} >
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
                   className="space-y-8"
@@ -166,7 +178,11 @@ export default function Projects() {
       </div>
       <div className="flex w-10/12 flex-wrap mx-auto justify-evenly mt-8">
         {projects?.map((project) => (
-          <Link href={`/projects/${project._id}`} key={project._id} className="basis-1/3 relative hover:scale-105 hover:transition-all">
+          <Link
+            href={`/projects/${project._id}`}
+            key={project._id}
+            className="basis-1/3 relative hover:scale-105 hover:transition-all"
+          >
             <div className="m-4 border border-black rounded-lg bg-slate-100 relative">
               <div className="grid items-start gap-4">
                 <Image
@@ -227,4 +243,3 @@ export default function Projects() {
     </div>
   );
 }
-
