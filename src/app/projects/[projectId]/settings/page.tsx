@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { useFieldArray, useForm } from "react-hook-form";
-import { toast } from "@/components/ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Card, CardTitle } from "@/components/ui/card";
@@ -34,52 +34,53 @@ import { auth } from "@clerk/nextjs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
-const profileFormSchema = z.object({
+const profileFormSchema = z
+  .object({
     name: z
-        .string()
-        .min(2, {
-            message: "Username must be at least 2 characters.",
-        })
-        .max(30, {
-            message: "Username must not be longer than 30 characters.",
-        })
-        .optional(),
+      .string()
+      .min(2, {
+        message: "Username must be at least 2 characters.",
+      })
+      .max(30, {
+        message: "Username must not be longer than 30 characters.",
+      })
+      .optional(),
     bio: z.string().max(160).min(4).optional(),
     frontEnd: z.string().optional(),
     backEnd: z.string().optional(),
     auth: z.string().optional(),
     db: z.string().optional(),
-}).refine((data) => {
+  })
+  .refine((data) => {
     const { frontEnd, backEnd, auth, db } = data;
     const isAnySelected = frontEnd || backEnd || auth || db;
     const isAllSelected = frontEnd && backEnd && auth && db;
     return !isAnySelected || isAllSelected;
-}, "If frontEnd, backEnd, auth, or db are selected, all fields are required.");
+  }, "If frontEnd, backEnd, auth, or db are selected, all fields are required.");
 
 const frontEndIcons = {
-    "react": <i className="devicon-react-original colored mr-3 "></i>,
-    "javascript": <i className="devicon-javascript-plain colored mr-3"></i>,
-    "angular": <i className="devicon-angularjs-plain colored mr-3"></i>,
-    "vue": <i className="devicon-vuejs-plain colored mr-3"></i>,
-    "svelte": <i className="devicon-svelte-plain colored mr-3"></i>,
-    "flutter": <i className="devicon-flutter-plain colored mr-3"></i>,
-    "none": "None",
+  react: <i className="devicon-react-original colored mr-3 "></i>,
+  javascript: <i className="devicon-javascript-plain colored mr-3"></i>,
+  angular: <i className="devicon-angularjs-plain colored mr-3"></i>,
+  vue: <i className="devicon-vuejs-plain colored mr-3"></i>,
+  svelte: <i className="devicon-svelte-plain colored mr-3"></i>,
+  flutter: <i className="devicon-flutter-plain colored mr-3"></i>,
+  none: "None",
 };
 
 const backEndIcons = {
-    "expressjs": <i className="devicon-express-original mr-3"></i>,
-    "nextjs": <i className="devicon-nextjs-original-wordmark mr-3"></i>,
-    "nodejs": <i className="devicon-nodejs-plain-wordmark colored mr-3"></i>,
-    "sveltekit": <i className="devicon-svelte-plain-wordmark colored mr-3"></i>,
-    "nuxt": <i className="devicon-nuxtjs-plain colored mr-3"></i>,
-    "java": <i className="devicon-java-plain colored mr-3"></i>,
-    "python": <i className="devicon-python-plain colored mr-3"></i>,
-    "ruby": <i className="devicon-ruby-plain colored mr-3"></i>,
-    "go": <i className="devicon-go-original-wordmark colored mr-3"></i>,
-    "django": <i className="devicon-django-plain colored mr-3"></i>,
-    "rust": <i className="devicon-rust-original mr-3"></i>,
-    "none": "None",
-
+  expressjs: <i className="devicon-express-original mr-3"></i>,
+  nextjs: <i className="devicon-nextjs-original-wordmark mr-3"></i>,
+  nodejs: <i className="devicon-nodejs-plain-wordmark colored mr-3"></i>,
+  sveltekit: <i className="devicon-svelte-plain-wordmark colored mr-3"></i>,
+  nuxt: <i className="devicon-nuxtjs-plain colored mr-3"></i>,
+  java: <i className="devicon-java-plain colored mr-3"></i>,
+  python: <i className="devicon-python-plain colored mr-3"></i>,
+  ruby: <i className="devicon-ruby-plain colored mr-3"></i>,
+  go: <i className="devicon-go-original-wordmark colored mr-3"></i>,
+  django: <i className="devicon-django-plain colored mr-3"></i>,
+  rust: <i className="devicon-rust-original mr-3"></i>,
+  none: "None",
 };
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
@@ -96,28 +97,52 @@ export default function ProjectSettings(props: {
     mode: "onChange",
   });
 
-const updateCurrent = useMutation(api.projects.updateProject)
+  const {toast} = useToast();
 
-function onSubmit(data: ProfileFormValues) {
+  const updateCurrent = useMutation(api.projects.updateProject);
 
-    if(!getProject) return;
+  function onSubmit(data: ProfileFormValues) {
+    if (!getProject) return;
 
-    if(!getProject.techStack) {
-        getProject.techStack = ["", "", "", ""];
+    if (!getProject.techStack) {
+      getProject.techStack = ["", "", "", ""];
     }
 
-    updateCurrent({
+    try {
+      updateCurrent({
         _id: getProject?._id,
         name: data.name ? data.name : getProject?.name,
         description: data.bio ? data.bio : getProject?.description,
         techStack: [
-            data.frontEnd || getProject?.techStack[0],
-            data.backEnd || getProject?.techStack[1],
-            data.auth || getProject?.techStack[2],
-            data.db || getProject?.techStack[3],
+          data.frontEnd || getProject?.techStack[0],
+          data.backEnd || getProject?.techStack[1],
+          data.auth || getProject?.techStack[2],
+          data.db || getProject?.techStack[3],
         ],
-    });
-}
+      });
+
+      form.reset({
+        name: "",
+        bio: "",
+        frontEnd: "",
+        backEnd: "",
+        auth: "",
+        db: "",
+      });
+
+      toast({
+        variant: "success",
+        title: "Project Updated",
+        description: "Your project has been updated successfully!",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "An error occurred. Please try again later.",
+      });
+    }
+  }
 
   return (
     <>
@@ -132,7 +157,10 @@ function onSubmit(data: ProfileFormValues) {
           <h1 className="text-4xl font-bold mb-6">Project Settings</h1>
           <Separator />
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-4 mt-4"
+            >
               <FormField
                 control={form.control}
                 name="name"
@@ -143,8 +171,8 @@ function onSubmit(data: ProfileFormValues) {
                       <Input placeholder={getProject.name} {...field} />
                     </FormControl>
                     <FormDescription>
-                        This is the name of your project. It will be displayed in
-                        the project list and on your project page.
+                      This is the name of your project. It will be displayed in
+                      the project list and on your project page.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -168,43 +196,85 @@ function onSubmit(data: ProfileFormValues) {
                 )}
               />
               <h1 className="text-2xl font-bold">Choose Tech Stack</h1>
-              <div><p>Current: </p> {getProject.techStack? (
-                    <div className="flex space-x-2 items-center">
-                        {getProject.techStack.map((tech, i) => {
-                            if (tech === "") {
-                                return <Badge key={i} variant="outline" className="bg-transparent">None</Badge>
-                            }
-                            if (i === 0) {
-                                return <>{frontEndIcons[tech as keyof typeof frontEndIcons]}</>
-                            }
-                            if (i === 1) {
-                                return <>{backEndIcons[tech as keyof typeof backEndIcons]}</>
-                            }
-                            if (i === 2) {
-                                if(tech === "nextauth") {
-                                    return <Badge key={i} variant="outline" className="bg-transparent">{tech.toUpperCase()}</Badge>
-                                } else {
-                                    return <Badge key={i} variant="outline" className="bg-transparent">{tech.toUpperCase()} AUTH</Badge>
-                                }
-                            }
-                            if (i === 3) {
-                                return <Badge key={i} variant="outline" className="bg-transparent">{tech.toUpperCase()}</Badge>
-                            }
-                        })
+              <div>
+                <p>Current: </p>{" "}
+                {getProject.techStack ? (
+                  <div className="flex space-x-2 items-center">
+                    {getProject.techStack.map((tech, i) => {
+                      if (tech === "") {
+                        return (
+                          <Badge
+                            key={i}
+                            variant="outline"
+                            className="bg-transparent"
+                          >
+                            None
+                          </Badge>
+                        );
+                      }
+                      if (i === 0) {
+                        return (
+                          <>
+                            {frontEndIcons[tech as keyof typeof frontEndIcons]}
+                          </>
+                        );
+                      }
+                      if (i === 1) {
+                        return (
+                          <>{backEndIcons[tech as keyof typeof backEndIcons]}</>
+                        );
+                      }
+                      if (i === 2) {
+                        if (tech === "nextauth") {
+                          return (
+                            <Badge
+                              key={i}
+                              variant="outline"
+                              className="bg-transparent"
+                            >
+                              {tech.toUpperCase()}
+                            </Badge>
+                          );
+                        } else {
+                          return (
+                            <Badge
+                              key={i}
+                              variant="outline"
+                              className="bg-transparent"
+                            >
+                              {tech.toUpperCase()} AUTH
+                            </Badge>
+                          );
                         }
-                </div>
-              ) : (<p>No tech stack chosen yet.</p>)} </div>
+                      }
+                      if (i === 3) {
+                        return (
+                          <Badge
+                            key={i}
+                            variant="outline"
+                            className="bg-transparent"
+                          >
+                            {tech.toUpperCase()}
+                          </Badge>
+                        );
+                      }
+                    })}
+                  </div>
+                ) : (
+                  <p>No tech stack chosen yet.</p>
+                )}{" "}
+              </div>
               <Separator />
+              <FormDescription>
+                If you want to change your tech stack, please select all fields.
+              </FormDescription>
               <FormField
                 control={form.control}
                 name="frontEnd"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Front-End</FormLabel>
-                    <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select A Front-End Framework" />
@@ -247,10 +317,7 @@ function onSubmit(data: ProfileFormValues) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Back-End</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select Your Back-End Of Choice" />
@@ -313,10 +380,7 @@ function onSubmit(data: ProfileFormValues) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Preferred Auth Provider</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select Your Preferred Auth Provider" />
@@ -325,16 +389,10 @@ function onSubmit(data: ProfileFormValues) {
                       <SelectContent>
                         <SelectItem value="clerk">Clerk</SelectItem>
                         <SelectItem value="nextauth">NextAuth</SelectItem>
-                        <SelectItem value="supabase">
-                          Supabase
-                        </SelectItem>
-                        <SelectItem value="firebase">
-                          Firebase
-                        </SelectItem>
+                        <SelectItem value="supabase">Supabase</SelectItem>
+                        <SelectItem value="firebase">Firebase</SelectItem>
                         <SelectItem value="kinde">Kinde</SelectItem>
-                        <SelectItem value="custom">
-                          Custom
-                        </SelectItem>
+                        <SelectItem value="custom">Custom</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
