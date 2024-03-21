@@ -11,9 +11,9 @@ export default function Project({ params }: { params: { projectId: string } }) {
   });
 
   return (
-    <>
+    <div>
       <h1>Project</h1>
       <p>Welcome to the project page</p>
-    </>
+    </div>
   );
 }

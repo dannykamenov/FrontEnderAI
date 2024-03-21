@@ -43,7 +43,6 @@ import {
 const formSchema = z.object({
   name: z.string().min(3).max(50),
   description: z.string().min(3).max(1000),
-  frontend: z.string(),
 });
 
 export default function Projects() {
@@ -75,11 +74,14 @@ export default function Projects() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!orgId || !me) return;
+    if (!orgId || !me) {
+      console.error("No orgId or me");
+      return;
+    }
 
     console.log(values);
 
- /*    try {
+    /*    try {
       await createProject({
         name: values.name,
         description: values.description,
@@ -114,7 +116,7 @@ export default function Projects() {
       <div className="w-5/12 mx-auto flex">
         <div className="flex items-center rounded-lg w-full mr-4 relative">
           <Input className="mr-4" placeholder="Search..." />
-          <Search className="w-6 h-6 text-black mr-4 absolute right-3" />
+          <Search className="w-6 h-6 mr-4 absolute right-3" />
         </div>
         <Dialog
           open={dialogOpen}
@@ -131,11 +133,13 @@ export default function Projects() {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Create Your Project</DialogTitle>
-              <Form {...form} >
+              <DialogTitle className="text-white">
+                Create Your Project
+              </DialogTitle>
+              <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-8"
+                  className="space-y-8 text-white"
                 >
                   <FormField
                     control={form.control}
@@ -169,7 +173,9 @@ export default function Projects() {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit">Submit</Button>
+                  <div className="w-full text-end">
+                    <Button type="submit">Submit</Button>
+                  </div>
                 </form>
               </Form>
             </DialogHeader>
