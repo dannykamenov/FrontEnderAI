@@ -91,18 +91,17 @@ const Header = () => {
             Pricing
           </Link>
           <p
-            className="p-2 text-slate-400 "
+            className="p-2 text-slate-400 relative"
           >
-            <s>Community</s><sup className="ml-2">Coming Soon</sup>
+            <s>Community</s><sup className="ml-2 absolute top-1 right-4">Coming Soon</sup>
           </p>
         </div>
         <div className="flex items-center ">
           <SignedOut>
             <SignInButton
               mode="modal"
-              className="p-2 hover:text-slate-400 hover:transition-all"
             >
-              Login
+              <div className="p-2 hover:text-slate-400 hover:transition-all cursor-pointer">Login</div>
             </SignInButton>
             <SignUpButton mode="modal">
               <Button variant="cta">Get Started</Button>
