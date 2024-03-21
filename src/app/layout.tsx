@@ -8,7 +8,7 @@ import ConvexClientProvider from "./ConvexClientProvider";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 
-const inter = Montserrat({ subsets: ["latin"]});
+const inter = Montserrat({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Front Ender AI",
@@ -22,14 +22,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={cn(
-          "min-h-screen dark",
-          inter.className
-        )}
-      >
+      <head>
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
+        />
+      </head>
+      <body className={cn("min-h-screen dark", inter.className)}>
         <ConvexClientProvider>
-          <Toaster  />
+          <Toaster />
           <Header />
           {children}
           <Footer />

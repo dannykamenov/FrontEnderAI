@@ -30,15 +30,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-  SelectGroup,
-  SelectLabel,
-} from "@radix-ui/react-select";
+
 
 const formSchema = z.object({
   name: z.string().min(3).max(50),
@@ -75,13 +67,9 @@ export default function Projects() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!orgId || !me) {
-      console.error("No orgId or me");
       return;
     }
-
-    console.log(values);
-
-    /*    try {
+    try {
       await createProject({
         name: values.name,
         description: values.description,
@@ -107,7 +95,7 @@ export default function Projects() {
         description:
           "Your project could not be created, please try again later.",
       });
-    } */
+    }
   }
 
   return (
@@ -196,7 +184,7 @@ export default function Projects() {
                   className="aspect-[16/9] rounded-lg object-cover"
                   height={225}
                   src={project.image ? project.image : "/placeholder.png"}
-                  width={400}
+                  width={500}
                 />
                 <div className="grid gap-1 break-words text-wrap overflow-auto whitespace-pre-wrap">
                   <h2 className="text-lg font-semibold break-words text-wrap overflow-auto whitespace-pre-wrap px-3 text-black">

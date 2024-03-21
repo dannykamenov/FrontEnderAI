@@ -8,7 +8,7 @@ import { clsx } from "clsx";
 export default function SideNav({ projectId }: { projectId: string }) {
   const pathname = usePathname();
   return (
-    <nav className="flex flex-col h-screen w-1/6 pt-6 pb-6 items-center px-2 md:px-4 gap-4 border-r border-slate-400 ">
+    <nav className="flex flex-col h-auto w-1/6 pt-6 pb-6 items-center px-2 md:px-4 gap-4 border-r border-slate-400 ">
       <Link
         className={clsx(
           "flex items-center  rounded-lg border border-transparent/40 border-[#000] px-1 py-1 w-full text-base transition-colors hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-gray-50",
@@ -19,7 +19,7 @@ export default function SideNav({ projectId }: { projectId: string }) {
         )}
         href={`/projects/${projectId}`}
       >
-        <Home className="h-5 w-5" />
+        <Home className="h-5 w-5 ml-2" />
         <span className="pl-3">Home</span>
       </Link>
       <Link
@@ -32,7 +32,7 @@ export default function SideNav({ projectId }: { projectId: string }) {
         )}
         href={`/projects/${projectId}/analytics`}
       >
-        <AreaChart className="h-5 w-5" />
+        <AreaChart className="h-5 w-5 ml-2" />
         <span className="pl-3">Analytics</span>
       </Link>
       <Link
@@ -45,7 +45,7 @@ export default function SideNav({ projectId }: { projectId: string }) {
         )}
         href={`/projects/${projectId}/tasks`}
       >
-        <ListTodo className="h-5 w-5" />
+        <ListTodo className="h-5 w-5 ml-2" />
         <span className="pl-3">Tasks</span>
       </Link>
       <Link
@@ -58,7 +58,7 @@ export default function SideNav({ projectId }: { projectId: string }) {
         )}
         href={`/projects/${projectId}/messages`}
       >
-        <MessageSquare className="h-5 w-5" />
+        <MessageSquare className="h-5 w-5 ml-2" />
         <span className="pl-3">Messages</span>
       </Link>
       <Link
@@ -71,7 +71,7 @@ export default function SideNav({ projectId }: { projectId: string }) {
         )}
         href={`/projects/${projectId}/settings`}
       >
-        <Cog className="h-5 w-5" />
+        <Cog className="h-5 w-5 ml-2" />
         <span className="pl-3">Project Settings</span>
       </Link>
     </nav>

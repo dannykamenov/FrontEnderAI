@@ -22,6 +22,7 @@ export default defineSchema({
     orgId: v.string(),
     userId: v.id("users"),
     progress: v.optional(v.string()),
+    techStack: v.optional(v.array(v.string())),
     tasks: v.optional(
       v.array(
         v.object({
