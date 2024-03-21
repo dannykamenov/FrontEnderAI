@@ -56,7 +56,31 @@ const profileFormSchema = z.object({
     return !isAnySelected || isAllSelected;
 }, "If frontEnd, backEnd, auth, or db are selected, all fields are required.");
 
+const frontEndIcons = {
+    "react": <i className="devicon-react-original colored mr-3 "></i>,
+    "javascript": <i className="devicon-javascript-plain colored mr-3"></i>,
+    "angular": <i className="devicon-angularjs-plain colored mr-3"></i>,
+    "vue": <i className="devicon-vuejs-plain colored mr-3"></i>,
+    "svelte": <i className="devicon-svelte-plain colored mr-3"></i>,
+    "flutter": <i className="devicon-flutter-plain colored mr-3"></i>,
+    "none": "None",
+};
 
+const backEndIcons = {
+    "expressjs": <i className="devicon-express-original mr-3"></i>,
+    "nextjs": <i className="devicon-nextjs-original-wordmark mr-3"></i>,
+    "nodejs": <i className="devicon-nodejs-plain-wordmark colored mr-3"></i>,
+    "sveltekit": <i className="devicon-svelte-plain-wordmark colored mr-3"></i>,
+    "nuxt": <i className="devicon-nuxtjs-plain colored mr-3"></i>,
+    "java": <i className="devicon-java-plain colored mr-3"></i>,
+    "python": <i className="devicon-python-plain colored mr-3"></i>,
+    "ruby": <i className="devicon-ruby-plain colored mr-3"></i>,
+    "go": <i className="devicon-go-original-wordmark colored mr-3"></i>,
+    "django": <i className="devicon-django-plain colored mr-3"></i>,
+    "rust": <i className="devicon-rust-original mr-3"></i>,
+    "none": "None",
+
+};
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
@@ -139,15 +163,37 @@ function onSubmit(data: ProfileFormValues) {
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription>
-                      You can <span>@mention</span> other users and
-                      organizations to link to them.
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <h1 className="text-2xl font-bold">Choose Tech Stack</h1>
+              <div><p>Current: </p> {getProject.techStack? (
+                    <div className="flex space-x-2 items-center">
+                        {getProject.techStack.map((tech, i) => {
+                            if (tech === "") {
+                                return <Badge key={i} variant="outline" className="bg-transparent">None</Badge>
+                            }
+                            if (i === 0) {
+                                return <>{frontEndIcons[tech as keyof typeof frontEndIcons]}</>
+                            }
+                            if (i === 1) {
+                                return <>{backEndIcons[tech as keyof typeof backEndIcons]}</>
+                            }
+                            if (i === 2) {
+                                if(tech === "nextauth") {
+                                    return <Badge key={i} variant="outline" className="bg-transparent">{tech.toUpperCase()}</Badge>
+                                } else {
+                                    return <Badge key={i} variant="outline" className="bg-transparent">{tech.toUpperCase()} AUTH</Badge>
+                                }
+                            }
+                            if (i === 3) {
+                                return <Badge key={i} variant="outline" className="bg-transparent">{tech.toUpperCase()}</Badge>
+                            }
+                        })
+                        }
+                </div>
+              ) : (<p>No tech stack chosen yet.</p>)} </div>
               <Separator />
               <FormField
                 control={form.control}
@@ -156,12 +202,12 @@ function onSubmit(data: ProfileFormValues) {
                   <FormItem>
                     <FormLabel>Front-End</FormLabel>
                     <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
+                        onValueChange={field.onChange}
+                        value={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a verified email to display" />
+                          <SelectValue placeholder="Select A Front-End Framework" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -203,11 +249,11 @@ function onSubmit(data: ProfileFormValues) {
                     <FormLabel>Back-End</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      value={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a verified email to display" />
+                          <SelectValue placeholder="Select Your Back-End Of Choice" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -269,11 +315,11 @@ function onSubmit(data: ProfileFormValues) {
                     <FormLabel>Preferred Auth Provider</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      value={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a verified email to display" />
+                          <SelectValue placeholder="Select Your Preferred Auth Provider" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
