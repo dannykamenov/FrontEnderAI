@@ -3,7 +3,6 @@
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { Loader2 } from "lucide-react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -15,7 +14,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
 import {
   Select,
   SelectTrigger,
@@ -24,64 +22,30 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useToast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Card, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { auth } from "@clerk/nextjs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { frontEndIcons, backEndIcons } from "./icons";
 
-const profileFormSchema = z
-  .object({
-    name: z
-      .string()
-      .min(2, {
-        message: "Username must be at least 2 characters.",
-      })
-      .max(30, {
-        message: "Username must not be longer than 30 characters.",
-      })
-      .optional(),
-    bio: z.string().max(160).min(4).optional(),
-    frontEnd: z.string().optional(),
-    backEnd: z.string().optional(),
-    auth: z.string().optional(),
-    db: z.string().optional(),
-  })
-  .refine((data) => {
+const profileFormSchema = z.object({
+  name: z.string().optional(),
+  bio: z
+    .string()
+    .optional(),
+  frontEnd: z.string().optional(),
+  backEnd: z.string().optional(),
+  auth: z.string().optional(),
+  db: z.string().optional(),
+});
+/*   .refine((data) => {
     const { frontEnd, backEnd, auth, db } = data;
     const isAnySelected = frontEnd || backEnd || auth || db;
     const isAllSelected = frontEnd && backEnd && auth && db;
     return !isAnySelected || isAllSelected;
-  }, "If frontEnd, backEnd, auth, or db are selected, all fields are required.");
-
-const frontEndIcons = {
-  react: <i className="devicon-react-original colored mr-3 "></i>,
-  javascript: <i className="devicon-javascript-plain colored mr-3"></i>,
-  angular: <i className="devicon-angularjs-plain colored mr-3"></i>,
-  vue: <i className="devicon-vuejs-plain colored mr-3"></i>,
-  svelte: <i className="devicon-svelte-plain colored mr-3"></i>,
-  flutter: <i className="devicon-flutter-plain colored mr-3"></i>,
-  none: "None",
-};
-
-const backEndIcons = {
-  expressjs: <i className="devicon-express-original mr-3"></i>,
-  nextjs: <i className="devicon-nextjs-original-wordmark mr-3"></i>,
-  nodejs: <i className="devicon-nodejs-plain-wordmark colored mr-3"></i>,
-  sveltekit: <i className="devicon-svelte-plain-wordmark colored mr-3"></i>,
-  nuxt: <i className="devicon-nuxtjs-plain colored mr-3"></i>,
-  java: <i className="devicon-java-plain colored mr-3"></i>,
-  python: <i className="devicon-python-plain colored mr-3"></i>,
-  ruby: <i className="devicon-ruby-plain colored mr-3"></i>,
-  go: <i className="devicon-go-original-wordmark colored mr-3"></i>,
-  django: <i className="devicon-django-plain colored mr-3"></i>,
-  rust: <i className="devicon-rust-original mr-3"></i>,
-  none: "None",
-};
+  }, "If frontEnd, backEnd, auth, or db are selected, all fields are required."); */
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
@@ -92,12 +56,20 @@ export default function ProjectSettings(props: {
     _id: props.params.projectId,
   });
 
-  const form = useForm<ProfileFormValues>({
+  const form = useForm<z.infer<typeof profileFormSchema>>({
     resolver: zodResolver(profileFormSchema),
+    defaultValues: {
+      name: "",
+      bio: "",
+      frontEnd: "",
+      backEnd: "",
+      auth: "",
+      db: "",
+    },
     mode: "onChange",
   });
 
-  const {toast} = useToast();
+  const { toast } = useToast();
 
   const updateCurrent = useMutation(api.projects.updateProject);
 
@@ -214,14 +186,16 @@ export default function ProjectSettings(props: {
                       }
                       if (i === 0) {
                         return (
-                          <>
+                          <div key={i}>
                             {frontEndIcons[tech as keyof typeof frontEndIcons]}
-                          </>
+                          </div>
                         );
                       }
                       if (i === 1) {
                         return (
-                          <>{backEndIcons[tech as keyof typeof backEndIcons]}</>
+                          <div key={i}>
+                            {backEndIcons[tech as keyof typeof backEndIcons]}
+                          </div>
                         );
                       }
                       if (i === 2) {
