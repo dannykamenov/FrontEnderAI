@@ -27,10 +27,10 @@ export default function SideNav({ projectId }: { projectId: string }) {
           "flex items-center  rounded-lg border border-transparent/40 border-[#000] px-1 py-1 w-full text-base transition-colors hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-gray-50",
           {
             "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-50":
-              pathname === `/projects/${projectId}/messages`,
+              pathname === `/projects/${projectId}/docs`,
           }
         )}
-        href={`/projects/${projectId}/messages`}
+        href={`/projects/${projectId}/docs`}
       >
         <FileCode2 className="h-5 w-5 ml-2" />
         <span className="pl-3">Docs</span>
