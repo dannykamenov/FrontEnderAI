@@ -23,18 +23,15 @@ export default defineSchema({
     userId: v.id("users"),
     progress: v.optional(v.string()),
     techStack: v.optional(v.array(v.string())),
-    tasks: v.optional(
-      v.array(
-        v.object({
-            taskId: v.string(),
-            title: v.string(),
-            status: v.string(),
-            label: v.string(),
-            priority: v.string(),
-            assignee: v.id("users"),
-        })
-      )
-    ),
   }).index("by_orgId_userId", ["orgId", "userId"]),
+    tasks: defineTable({
+        title: v.string(),
+        description: v.string(),
+        status: v.string(),
+        label: v.string(),
+        priority: v.string(),
+        assignee: v.id("users"),
+        projectId: v.id("projects"),
+    }).index("by_assignee", ["assignee"]),
 });
 

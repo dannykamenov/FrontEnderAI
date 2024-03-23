@@ -60,14 +60,16 @@ const formSchema = z.object({
   label: z.string().min(3).max(50),
 });
 
-export default function AddTask(props: {
-    params: { projectId: string };
-  }) {
+export default function AddTask(props: { params: { projectId: string } }) {
   const { toast } = useToast();
   const user = useUser();
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const me = useQuery(api.users.getMe);
+  const createTask = useMutation(api.projects.addTask);
+  const getProject = useQuery(api.projects.getProjectById, {
+    _id: props.params.projectId,
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -81,10 +83,21 @@ export default function AddTask(props: {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!me) {
+    if (!me || !getProject) {
       return;
     }
+
     try {
+      await createTask({
+        projectId: getProject._id,
+        title: values.title,
+        description: values.description,
+        status: values.status,
+        label: values.label,
+        priority: values.priority,
+        assignee: me._id,
+      });
+
       form.reset();
 
       setDialogOpen(false);

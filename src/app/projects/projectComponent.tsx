@@ -204,7 +204,7 @@ export default function Projects() {
                     <Badge variant="cta">In Progress</Badge>
                   )}
                 </div>
-                <div className="grid gap-1">
+{/*                 <div className="grid gap-1">
                   <p className="text-sm text-gray-500 dark:text-gray-400 px-3">
                     Task Status:{" "}
                     {project.tasks ? (
@@ -217,7 +217,7 @@ export default function Projects() {
                       </span>
                     )}
                   </p>
-                </div>
+                </div> */}
                 <div className="grid gap-1">
                   <p className="text-sm text-gray-500 dark:text-gray-400 px-3 pb-4">
                     Started:{" "}

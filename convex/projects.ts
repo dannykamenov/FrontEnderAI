@@ -1,12 +1,5 @@
 import { ConvexError, v } from "convex/values";
-import {
-  MutationCtx,
-  QueryCtx,
-  internalMutation,
-  mutation,
-  query,
-} from "./_generated/server";
-import { Id } from "./_generated/dataModel";
+import { mutation, query } from "./_generated/server";
 
 export const getProjects = query({
   args: { orgId: v.string() },
@@ -28,27 +21,18 @@ export const createProject = mutation({
     userId: v.id("users"),
     progress: v.optional(v.string()),
     techStack: v.optional(v.array(v.string())),
-    tasks: v.optional(
-      v.array(
-        v.object({
-          name: v.string(),
-          description: v.string(),
-          completed: v.boolean(),
-        })
-      )
-    ),
   },
-async handler(ctx, args) {
+  async handler(ctx, args) {
     await ctx.db.insert("projects", {
-        name: args.name,
-        description: args.description,
-        image: args.image,
-        progress: args.progress,
-        orgId: args.orgId,
-        userId: args.userId,
-        tasks: args.tasks as { taskId: string; title: string; status: string; label: string; priority: string; assignee: Id<"users">; }[] | undefined,
+      name: args.name,
+      description: args.description,
+      image: args.image,
+      progress: args.progress,
+      orgId: args.orgId,
+      userId: args.userId,
+      techStack: args.techStack,
     });
-},
+  },
 });
 
 export const getProjectById = query({
@@ -78,5 +62,39 @@ export const updateProject = mutation({
       description: args.description,
       techStack: args.techStack,
     });
+  },
+});
+
+export const addTask = mutation({
+  args: {
+    projectId: v.id("projects"),
+    title: v.string(),
+    description: v.string(),
+    status: v.string(),
+    label: v.string(),
+    priority: v.string(),
+    assignee: v.id("users"),
+  },
+  async handler(ctx, args) {
+    await ctx.db.insert("tasks", {
+      projectId: args.projectId,
+      title: args.title,
+      description: args.description,
+      status: args.status,
+      label: args.label,
+      priority: args.priority,
+      assignee: args.assignee,
+    });
+  },
+});
+
+export const getProjectTasks = query({
+  args: { projectId: v.string() },
+  async handler(ctx, args) {
+    const tasks = await ctx.db
+      .query("tasks")
+      .filter((q) => q.eq(q.field("projectId"), args.projectId))
+      .collect();
+    return tasks;
   },
 });
