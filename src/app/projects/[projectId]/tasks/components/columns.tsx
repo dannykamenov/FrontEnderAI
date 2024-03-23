@@ -9,14 +9,15 @@ import { labels, priorities, statuses } from "../data/data"
 import { Task } from "../data/schema"
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
+import Link from "next/link"
 
 export const columns: ColumnDef<Task>[] = [
   {
-    accessorKey: "id",
+    accessorKey: "_id",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Task" />
     ),
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue("id")}</div>,
+    cell: ({ row }: { row: any }) => <div className="w-[80px]"><Link href={`/projects/${row.original.projectId}/tasks/${row.getValue("_id")}`}>{`TASK-${row.getValue("_id").substring(0, 4).toUpperCase()}`}</Link></div>,
     enableSorting: false,
     enableHiding: false,
   },
