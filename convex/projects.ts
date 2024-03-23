@@ -6,6 +6,7 @@ import {
   mutation,
   query,
 } from "./_generated/server";
+import { Id } from "./_generated/dataModel";
 
 export const getProjects = query({
   args: { orgId: v.string() },
@@ -37,17 +38,17 @@ export const createProject = mutation({
       )
     ),
   },
-  async handler(ctx, args) {
+async handler(ctx, args) {
     await ctx.db.insert("projects", {
-      name: args.name,
-      description: args.description,
-      image: args.image,
-      progress: args.progress,
-      orgId: args.orgId,
-      userId: args.userId,
-      tasks: args.tasks,
+        name: args.name,
+        description: args.description,
+        image: args.image,
+        progress: args.progress,
+        orgId: args.orgId,
+        userId: args.userId,
+        tasks: args.tasks as { taskId: string; title: string; status: string; label: string; priority: string; assignee: Id<"users">; }[] | undefined,
     });
-  },
+},
 });
 
 export const getProjectById = query({

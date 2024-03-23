@@ -31,6 +31,7 @@ export default defineSchema({
             status: v.string(),
             label: v.string(),
             priority: v.string(),
+            assignee: v.id("users"),
         })
       )
     ),

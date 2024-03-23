@@ -1,10 +1,17 @@
-"use client"
+"use client";
 
 import { api } from "../../../../../../convex/_generated/api";
 import { useQuery, useMutation } from "convex/react";
-import { useOrganization, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-import { Loader2, BadgePlus, Search } from "lucide-react";
+import {
+  Loader2,
+  BadgePlus,
+  Search,
+  Bug,
+  BookText,
+  CircleCheck,
+} from "lucide-react";
 import { DialogHeader } from "@/components/ui/dialog";
 import {
   Dialog,
@@ -27,142 +34,260 @@ import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
-import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  ArrowDownIcon,
+  ArrowRightIcon,
+  ArrowUpIcon,
+  CheckCircledIcon,
+  CircleIcon,
+  CrossCircledIcon,
+  QuestionMarkCircledIcon,
+  StopwatchIcon,
+} from "@radix-ui/react-icons";
 
 const formSchema = z.object({
-    name: z.string().min(3).max(50),
-    description: z.string().min(3).max(1000),
+  title: z.string().min(3).max(50),
+  description: z.string().min(3).max(1000),
+  status: z.string().min(3).max(50),
+  priority: z.string().min(3).max(50),
+  label: z.string().min(3).max(50),
+});
+
+export default function AddTask(props: {
+    params: { projectId: string };
+  }) {
+  const { toast } = useToast();
+  const user = useUser();
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const me = useQuery(api.users.getMe);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      status: "",
+      priority: "",
+      label: "",
+    },
   });
 
-export default function AddTask() {
-
-
-    const { toast } = useToast();
-    const user = useUser();
-    const organization = useOrganization();
-    const [dialogOpen, setDialogOpen] = useState(false);
-  
-    let orgId: string | undefined = undefined;
-  
-    const me = useQuery(api.users.getMe);
-  
-    if (organization.isLoaded && user.isLoaded) {
-      orgId = organization.organization?.id ?? user.user?.id;
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (!me) {
+      return;
     }
-  
-    const projects = useQuery(api.projects.getProjects, {
-      orgId: orgId ?? "skip",
-    });
-  
-    const createProject = useMutation(api.projects.createProject);
-  
-    const form = useForm<z.infer<typeof formSchema>>({
-      resolver: zodResolver(formSchema),
-      defaultValues: {
-        name: "",
-        description: "",
-      },
-    });
-  
-    async function onSubmit(values: z.infer<typeof formSchema>) {
-      if (!orgId || !me) {
-        return;
-      }
-      try {
-        await createProject({
-          name: values.name,
-          description: values.description,
-          orgId: orgId,
-          userId: me._id ?? "skip",
-          progress: "In Progress",
-        });
-  
+    try {
+      form.reset();
+
+      setDialogOpen(false);
+
+      toast({
+        variant: "success",
+        title: "Task Created",
+        description:
+          "Congratulations! Your task has been created successfully!",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Task Creation Failed",
+        description: "Your task could not be created, please try again later.",
+      });
+    }
+  }
+
+  return (
+    <Dialog
+      open={dialogOpen}
+      onOpenChange={(isOpen) => {
+        setDialogOpen(isOpen);
         form.reset();
-  
-        setDialogOpen(false);
-  
-        toast({
-          variant: "success",
-          title: "Project Created",
-          description:
-            "Congratulations! Your project has been created successfully!",
-        });
-      } catch (error) {
-        toast({
-          variant: "destructive",
-          title: "Project Creation Failed",
-          description:
-            "Your project could not be created, please try again later.",
-        });
-      }
-    }
-  
-
-    return (
-        <Dialog
-          open={dialogOpen}
-          onOpenChange={(isOpen) => {
-            setDialogOpen(isOpen);
-            form.reset();
-          }}
-        >
-          <DialogTrigger asChild>
-            <Button variant="cta">
-              <BadgePlus className="mr-2" />
-              Create Project
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle className="text-white">
-                Create Your Project
-              </DialogTitle>
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-8 text-white"
-                >
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Project Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Your Project Name..."
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Project Description</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Your Project Description..."
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                    <div className="w-full text-end">
-                        <Button type="submit">Submit</Button>
-                    </div>
-                </form>
-                </Form>
-            </DialogHeader>
-            </DialogContent>
-        </Dialog>
-    );
+      }}
+    >
+      <DialogTrigger asChild>
+        <Button variant="cta">
+          <BadgePlus className="mr-2" />
+          Add Task
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle className="text-white">Add Task</DialogTitle>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-8 text-white"
+            >
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Task Title</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="What is your task about?"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Task Description</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Describe your task..."
+                        className="resize-none"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="label"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Task Label</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Task Label" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="bug" className="flex items-center">
+                          <div className="flex items-center">
+                            <Bug className="mr-3 w-4 h-4" /> Bug
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="feature">
+                          <div className="flex items-center">
+                            <CircleCheck className="mr-3 w-4 h-4" />
+                            Feature
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="documentation">
+                          <div className="flex items-center">
+                            <BookText className="mr-3 w-4 h-4" />
+                            Documentation
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Task Status</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Task Status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="backlog">
+                          <div className="flex items-center">
+                            <QuestionMarkCircledIcon className="mr-3" />
+                            Backlog
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="todo">
+                          <div className="flex items-center">
+                            <CircleIcon className="mr-3" />
+                            To Do
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="in progress">
+                          <div className="flex items-center">
+                            <StopwatchIcon className="mr-3" />
+                            In Progress
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="done">
+                          <div className="flex items-center">
+                            <CheckCircledIcon className="mr-3" />
+                            Done
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="canceled">
+                          <div className="flex items-center">
+                            <CrossCircledIcon className="mr-3" />
+                            Canceled
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="priority"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Task Priority</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Task Priority" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="low">
+                          <div className="flex items-center">
+                            <ArrowDownIcon className="mr-3" />
+                            Low
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="medium">
+                          <div className="flex items-center">
+                            <ArrowRightIcon className="mr-3" />
+                            Medium
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="high">
+                          <div className="flex items-center">
+                            <ArrowUpIcon className="mr-3" />
+                            High
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="w-full text-end">
+                <Button type="submit">Submit</Button>
+              </div>
+            </form>
+          </Form>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
+  );
 }
