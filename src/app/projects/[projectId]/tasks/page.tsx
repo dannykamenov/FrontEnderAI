@@ -8,6 +8,9 @@ import { columns } from "./components/columns";
 import { DataTable } from "./components/data-table";
 import { UserNav } from "./components/user-nav";
 import { taskSchema } from "./data/schema";
+import { Button } from "@/components/ui/button";
+import { ListPlus } from "lucide-react";
+import AddTask from "./components/dialog";
 
 export const metadata: Metadata = {
   title: "Tasks",
@@ -375,7 +378,7 @@ export default async function TaskPage() {
             </p>
           </div>
           <div className="flex items-center space-x-2">
-            <UserNav />
+            <AddTask />
           </div>
         </div>
         <DataTable data={tasks} columns={columns} />

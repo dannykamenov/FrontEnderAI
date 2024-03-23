@@ -29,6 +29,7 @@ import { z } from "zod";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { frontEndIcons, backEndIcons } from "./icons";
+import { useOrganization, useUser } from "@clerk/nextjs";
 
 const profileFormSchema = z.object({
   name: z.string().optional(),
@@ -72,8 +73,28 @@ export default function ProjectSettings(props: {
   const { toast } = useToast();
 
   const updateCurrent = useMutation(api.projects.updateProject);
+  const user = useUser();
+  const organization = useOrganization();
+
+  let orgId: string | undefined = undefined;
+  
+  const me = useQuery(api.users.getMe);
+
+  if (organization.isLoaded && user.isLoaded) {
+    orgId = organization.organization?.id ?? user.user?.id;
+  }
+
+  const projects = useQuery(api.projects.getProjects, {
+    orgId: orgId ?? "skip",
+  });
 
   function onSubmit(data: ProfileFormValues) {
+
+    
+    if (!orgId || !me) {
+        return;
+      }
+
     if (!getProject) return;
 
     if (!getProject.techStack) {

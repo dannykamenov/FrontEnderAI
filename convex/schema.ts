@@ -26,11 +26,14 @@ export default defineSchema({
     tasks: v.optional(
       v.array(
         v.object({
-          name: v.string(),
-          description: v.string(),
-          completed: v.boolean(),
+            taskId: v.string(),
+            title: v.string(),
+            status: v.string(),
+            label: v.string(),
+            priority: v.string(),
         })
       )
     ),
   }).index("by_orgId_userId", ["orgId", "userId"]),
 });
+
