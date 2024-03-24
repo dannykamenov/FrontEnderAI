@@ -53,13 +53,14 @@ import {
   StopwatchIcon,
 } from "@radix-ui/react-icons";
 import { Task } from "../data/schema";
+import { Id } from "../../../../../../convex/_generated/dataModel";
 
 const formSchema = z.object({
-  title: z.string().min(3).max(50).optional(),
-  description: z.string().min(3).max(1000).optional(),
-  status: z.string().min(3).max(50).optional(),
-  priority: z.string().min(3).max(50).optional(),
-  label: z.string().min(3).max(50).optional(),
+  title: z.string().optional().nullable(),
+  description: z.string().optional().nullable(),
+  status: z.string().optional(),
+  priority: z.string().optional(),
+  label: z.string().optional(),
 });
 
 export default function EditTask(props: { task: Task }) {
@@ -89,15 +90,15 @@ export default function EditTask(props: { task: Task }) {
     }
 
     try {
-/*       await createTask({
-        projectId: getProject._id,
-        title: values.title,
-        description: values.description,
-        status: values.status,
-        label: values.label,
-        priority: values.priority,
+      await updateTask({
+        _id: props.task._id as Id<"tasks">,
+        title: values.title || props.task.title,
+        description: values.description || props.task.description,
+        status: values.status || props.task.status,
+        label: values.label || props.task.label,
+        priority: values.priority || props.task.priority,
         assignee: me._id,
-      }); */
+      });
 
       form.reset();
 
@@ -128,8 +129,8 @@ export default function EditTask(props: { task: Task }) {
     >
       <DialogTrigger asChild>
         <Button variant="cta" className="w-full">
-          <NotebookPen  className="w-4 h-4 mr-3" />
-          Edit 
+          <NotebookPen className="w-4 h-4 mr-3" />
+          Edit
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -147,10 +148,10 @@ export default function EditTask(props: { task: Task }) {
                   <FormItem>
                     <FormLabel>Task Title</FormLabel>
                     <FormControl>
-                      <Input
+                    <Input
                         placeholder="What is your task about?"
                         {...field}
-                      />
+                    />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -167,6 +168,7 @@ export default function EditTask(props: { task: Task }) {
                         placeholder="Describe your task..."
                         className="resize-none"
                         {...field}
+                        value={field.value || ''}
                       />
                     </FormControl>
                     <FormMessage />
