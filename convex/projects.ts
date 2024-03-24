@@ -98,3 +98,33 @@ export const getProjectTasks = query({
     return tasks;
   },
 });
+
+export const deleteTaskById = mutation({
+    args: { _id: v.id("tasks") },
+    async handler(ctx, args) {
+        await ctx.db.delete(args._id);
+    },
+});
+
+
+export const updateTask = mutation({
+    args: {
+        _id: v.id("tasks"),
+        title: v.string(),
+        description: v.string(),
+        status: v.string(),
+        label: v.string(),
+        priority: v.string(),
+        assignee: v.id("users"),
+    },
+    async handler(ctx, args) {
+        await ctx.db.patch(args._id, {
+            title: args.title,
+            description: args.description,
+            status: args.status,
+            label: args.label,
+            priority: args.priority,
+            assignee: args.assignee,
+        });
+    },
+});

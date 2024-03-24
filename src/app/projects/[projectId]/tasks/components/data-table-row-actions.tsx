@@ -13,8 +13,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { taskSchema } from "../data/schema";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../../../../../../convex/_generated/api";
+import { Id } from "../../../../../../convex/_generated/dataModel";
+import { useToast } from "@/components/ui/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import React from "react";
+import { Trash } from "lucide-react";
+import EditTask from "./edit-dialog";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -24,15 +40,37 @@ export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const task = taskSchema.parse(row.original);
-  const router = useRouter();
+  const { toast } = useToast();
+  const deleteTask = useMutation(api.projects.deleteTaskById);
+  const [dialogOpen, setDialogOpen] = React.useState(false);
 
   const handleDelete = () => {
-    console.log(`Deleting task ${task._id}`);
-    return;
+    const id: Id<"tasks"> = task._id as Id<"tasks">;
+
+    try {
+      deleteTask({ _id: id });
+
+      toast({
+        variant: "success",
+        title: "Task Deleted",
+        description: "Your task has been deleted successfully!",
+      });
+
+      setDialogOpen(false);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "An error occurred while deleting the task.",
+      });
+    }
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu
+      open={dialogOpen}
+      onOpenChange={(open) => setDialogOpen(open)}   
+    >
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
@@ -43,27 +81,32 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem>
-          <Button
-            variant="cta"
-            size="sm"
-            className="w-full"
-          >
-            Edit
-          </Button>
+        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+          <EditTask task={task} />
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Button
-            variant="destructive"
-            size="sm"
-            className="w-full"
-            onClick={handleDelete}
-          >
-            Delete
-          </Button>
+        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" className="w-full"><Trash className="w-4 h-4 mr-3"/>Delete</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  your task and you will not be able to modify it.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel onClick={() => setDialogOpen(false)}>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDelete} className="bg-red-700 text-white"><Trash className="w-4 h-4 mr-3"/>Delete</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+    
   );
 }
