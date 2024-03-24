@@ -81,7 +81,7 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+        <DropdownMenuItem onSelect={(e) => e.preventDefault()} onKeyDown={(e) => e.stopPropagation()}>
           <EditTask task={task} />
         </DropdownMenuItem>
         <DropdownMenuSeparator />

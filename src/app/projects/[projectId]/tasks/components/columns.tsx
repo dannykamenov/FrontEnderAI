@@ -17,7 +17,7 @@ export const columns: ColumnDef<Task>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Task" />
     ),
-    cell: ({ row }: { row: any }) => <div className="w-[80px]"><Link href={`/projects/${row.original.projectId}/tasks/${row.getValue("_id")}`}>{`TASK-${row.getValue("_id").substring(0, 4).toUpperCase()}`}</Link></div>,
+    cell: ({ row }: { row: any }) => <div className="w-[90px] text-xs"><Link href={`/projects/${row.original.projectId}/tasks/${row.getValue("_id")}`}>{`TASK-${row.getValue("_id").substring(0, 6).toUpperCase()}`}</Link></div>,
     enableSorting: false,
     enableHiding: false,
   },

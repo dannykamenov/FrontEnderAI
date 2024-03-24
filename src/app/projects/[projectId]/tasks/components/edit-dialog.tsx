@@ -121,11 +121,11 @@ export default function EditTask(props: { task: Task }) {
 
   return (
     <Dialog
-      open={dialogOpen}
-      onOpenChange={(isOpen) => {
-        setDialogOpen(isOpen);
-        form.reset();
-      }}
+        open={dialogOpen}
+        onOpenChange={(isOpen) => {
+            setDialogOpen(isOpen);
+            form.reset();
+        }}
     >
       <DialogTrigger asChild>
         <Button variant="cta" className="w-full">
@@ -133,7 +133,7 @@ export default function EditTask(props: { task: Task }) {
           Edit
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent onKeyDown={(e) => e.stopPropagation()}>
         <DialogHeader>
           <DialogTitle className="text-white">Edit Task</DialogTitle>
           <Form {...form}>
@@ -151,6 +151,7 @@ export default function EditTask(props: { task: Task }) {
                     <Input
                         placeholder="What is your task about?"
                         {...field}
+                        value={field.value || ''}
                     />
                     </FormControl>
                     <FormMessage />
