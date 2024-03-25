@@ -143,11 +143,11 @@ export default function EditTask(props: { task: Task }) {
       </DialogTrigger>
       <DialogContent onKeyDown={(e) => e.stopPropagation()}>
         <DialogHeader>
-          <DialogTitle className="text-white">Edit Task</DialogTitle>
+          <DialogTitle className="">Edit Task</DialogTitle>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-8 text-white"
+              className="space-y-8 "
             >
               <FormField
                 control={form.control}

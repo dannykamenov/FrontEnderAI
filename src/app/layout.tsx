@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
 
-import Footer from "./statics/Footer";
-import Header from "./statics/Header";
+import Footer from "../components/global/Footer";
+import Header from "../components/global/Header";
 import ConvexClientProvider from "./ConvexClientProvider";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "@/components/ui/theme-provider";
 
 const inter = Montserrat({ subsets: ["latin"] });
 
@@ -29,12 +30,19 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
         />
       </head>
-      <body className={cn("min-h-screen dark", inter.className)}>
+      <body className={cn("min-h-screen", inter.className)}>
         <ConvexClientProvider>
           <Toaster />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
           <Header />
           {children}
           <Footer />
+          </ThemeProvider>
         </ConvexClientProvider>
       </body>
     </html>

@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { SignUpButton, SignedIn, SignedOut, useSession } from "@clerk/nextjs";
 import Link from "next/link";
-import ArrowDown from "./reusables/ArrowDown";
+import { ArrowDown } from "lucide-react";
 
 export default function Home() {
   const session = useSession();

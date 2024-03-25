@@ -1,4 +1,4 @@
-import SideNav from "@/app/statics/SideNav";
+import SideNav from "@/components/global/SideNav";
 
 
 

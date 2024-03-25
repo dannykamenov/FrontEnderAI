@@ -121,13 +121,13 @@ export default function Projects() {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle className="text-white">
+              <DialogTitle className="">
                 Create Your Project
               </DialogTitle>
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-8 text-white"
+                  className="space-y-8"
                 >
                   <FormField
                     control={form.control}

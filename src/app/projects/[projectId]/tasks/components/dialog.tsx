@@ -141,11 +141,11 @@ export default function AddTask(props: { params: { projectId: string } }) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-white">Add Task</DialogTitle>
+          <DialogTitle className="">Add Task</DialogTitle>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-8 text-white"
+              className="space-y-8 "
             >
               <FormField
                 control={form.control}

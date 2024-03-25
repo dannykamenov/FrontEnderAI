@@ -3,7 +3,7 @@
 import ProjectI from "@/interfaces/projectInterface";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import SideNav from "@/app/statics/SideNav";
+import SideNav from "@/components/global/SideNav";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";

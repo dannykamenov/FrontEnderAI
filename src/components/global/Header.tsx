@@ -13,6 +13,7 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { clsx } from "clsx";
+import { ModeToggle } from "../ui/mode-toggle";
 
 const Header = () => {
   const pathname = usePathname();
@@ -61,11 +62,12 @@ const Header = () => {
             >
               Home
             </Link>
-            <div className="pl-5 flex gap-2">
+            <div className="pl-5 pr-5 flex gap-2">
               {/* <OrganizationSwitcher /> - only when paid */}
               <UserButton />
             </div>
           </SignedIn>
+          <ModeToggle />
         </div>
       </nav>
     );
@@ -111,11 +113,12 @@ const Header = () => {
             <Button variant="cta">
               <Link href="/dashboard">Dashboard</Link>
             </Button>
-            <div className="pl-5 flex gap-2">
+            <div className="pl-5 pr-5 flex gap-2">
               {/* <OrganizationSwitcher /> - only when paid */}
               <UserButton />
             </div>
           </SignedIn>
+          <ModeToggle />
         </div>
       </nav>
     );
