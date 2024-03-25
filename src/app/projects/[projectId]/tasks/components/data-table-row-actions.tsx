@@ -2,7 +2,6 @@
 
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Row } from "@tanstack/react-table";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,7 +10,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
 import { taskSchema } from "../data/schema";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../../convex/_generated/api";
@@ -29,8 +27,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import React from "react";
-import { Trash } from "lucide-react";
+import { NotebookPen, Trash } from "lucide-react";
 import EditTask from "./edit-dialog";
+import { DialogHeader,Dialog, DialogTrigger, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -43,9 +42,19 @@ export function DataTableRowActions<TData>({
   const { toast } = useToast();
   const deleteTask = useMutation(api.projects.deleteTaskById);
   const [dialogOpen, setDialogOpen] = React.useState(false);
+  const me = useQuery(api.users.getMe);
 
   const handleDelete = () => {
     const id: Id<"tasks"> = task._id as Id<"tasks">;
+
+    if (!me) return console.log("No user");
+    if (me._id !== task.assignee) {
+      return toast({
+        variant: "destructive",
+        title: "Error",
+        description: "You can't delete this task.",
+      });
+    }
 
     try {
       deleteTask({ _id: id });
@@ -69,7 +78,7 @@ export function DataTableRowActions<TData>({
   return (
     <DropdownMenu
       open={dialogOpen}
-      onOpenChange={(open) => setDialogOpen(open)}   
+      onOpenChange={(open) => setDialogOpen(open)}
     >
       <DropdownMenuTrigger asChild>
         <Button
@@ -81,14 +90,20 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem onSelect={(e) => e.preventDefault()} onKeyDown={(e) => e.stopPropagation()}>
+        <DropdownMenuItem
+          onSelect={(e) => e.preventDefault()}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
           <EditTask task={task} />
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="destructive" className="w-full"><Trash className="w-4 h-4 mr-3"/>Delete</Button>
+              <Button variant="destructive" className="w-full">
+                <Trash className="w-4 h-4 mr-3" />
+                Delete
+              </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
@@ -99,14 +114,21 @@ export function DataTableRowActions<TData>({
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel onClick={() => setDialogOpen(false)}>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDelete} className="bg-red-700 text-white"><Trash className="w-4 h-4 mr-3"/>Delete</AlertDialogAction>
+                <AlertDialogCancel onClick={() => setDialogOpen(false)}>
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDelete}
+                  className="bg-red-700 text-white"
+                >
+                  <Trash className="w-4 h-4 mr-3" />
+                  Delete
+                </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-    
   );
 }

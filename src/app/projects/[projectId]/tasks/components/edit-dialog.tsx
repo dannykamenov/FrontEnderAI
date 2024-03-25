@@ -76,17 +76,25 @@ export default function EditTask(props: { task: Task }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      status: "",
-      priority: "",
-      label: "",
+      title: props.task.title,
+      description: props.task.description,
+      status: props.task.status,
+      label: props.task.label,
+      priority: props.task.priority,
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!me || !getProject) {
       return;
+    }
+
+    if (me._id !== props.task.assignee) {
+      return toast({
+        variant: "destructive",
+        title: "Error",
+        description: "You don't have permission to edit this task.",
+      });
     }
 
     try {
@@ -108,24 +116,24 @@ export default function EditTask(props: { task: Task }) {
         variant: "success",
         title: "Task Created",
         description:
-          "Congratulations! Your task has been created successfully!",
+          "Congratulations! Your task has been updated successfully!",
       });
     } catch (error) {
       toast({
         variant: "destructive",
         title: "Task Creation Failed",
-        description: "Your task could not be created, please try again later.",
+        description: "Your task could not be updated, please try again later.",
       });
     }
   }
 
   return (
     <Dialog
-        open={dialogOpen}
-        onOpenChange={(isOpen) => {
-            setDialogOpen(isOpen);
-            form.reset();
-        }}
+      open={dialogOpen}
+      onOpenChange={(isOpen) => {
+        setDialogOpen(isOpen);
+        form.reset();
+      }}
     >
       <DialogTrigger asChild>
         <Button variant="cta" className="w-full">
@@ -148,11 +156,11 @@ export default function EditTask(props: { task: Task }) {
                   <FormItem>
                     <FormLabel>Task Title</FormLabel>
                     <FormControl>
-                    <Input
+                      <Input
                         placeholder="What is your task about?"
                         {...field}
-                        value={field.value || ''}
-                    />
+                        value={field.value || ""}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -169,7 +177,7 @@ export default function EditTask(props: { task: Task }) {
                         placeholder="Describe your task..."
                         className="resize-none"
                         {...field}
-                        value={field.value || ''}
+                        value={field.value || ""}
                       />
                     </FormControl>
                     <FormMessage />

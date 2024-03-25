@@ -30,24 +30,17 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { frontEndIcons, backEndIcons } from "./icons";
 import { useOrganization, useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const profileFormSchema = z.object({
   name: z.string().optional(),
-  bio: z
-    .string()
-    .optional(),
+  bio: z.string().optional(),
   frontEnd: z.string().optional(),
   backEnd: z.string().optional(),
   auth: z.string().optional(),
   db: z.string().optional(),
 });
-/*   .refine((data) => {
-    const { frontEnd, backEnd, auth, db } = data;
-    const isAnySelected = frontEnd || backEnd || auth || db;
-    const isAllSelected = frontEnd && backEnd && auth && db;
-    return !isAnySelected || isAllSelected;
-  }, "If frontEnd, backEnd, auth, or db are selected, all fields are required."); */
-
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 export default function ProjectSettings(props: {
@@ -56,6 +49,7 @@ export default function ProjectSettings(props: {
   const getProject = useQuery(api.projects.getProjectById, {
     _id: props.params.projectId,
   });
+  const [isConfirmed, setIsConfirmed] = useState(false);
 
   const form = useForm<z.infer<typeof profileFormSchema>>({
     resolver: zodResolver(profileFormSchema),
@@ -67,7 +61,6 @@ export default function ProjectSettings(props: {
       auth: "",
       db: "",
     },
-    mode: "onChange",
   });
 
   const { toast } = useToast();
@@ -77,7 +70,7 @@ export default function ProjectSettings(props: {
   const organization = useOrganization();
 
   let orgId: string | undefined = undefined;
-  
+
   const me = useQuery(api.users.getMe);
 
   if (organization.isLoaded && user.isLoaded) {
@@ -87,13 +80,29 @@ export default function ProjectSettings(props: {
   const projects = useQuery(api.projects.getProjects, {
     orgId: orgId ?? "skip",
   });
+  const router = useRouter();
+
+  useEffect(() => {
+    if (me && getProject && me._id !== getProject.userId) {
+      router.replace("/projects");
+    } else if (me && getProject && me._id === getProject.userId) {
+        setIsConfirmed(true);
+    }
+  }, [me, getProject, router]);
+
+  if (!isConfirmed || isConfirmed == null || isConfirmed == undefined) {
+    return (
+      <div className="w-fit h-fit flex m-auto flex-col items-center mb-48 mt-36">
+        <Loader2 className="w-48 h-48 animate-spin"></Loader2>
+        <p>Authenticating...</p>
+      </div>
+    );
+  }
 
   function onSubmit(data: ProfileFormValues) {
-
-    
     if (!orgId || !me) {
-        return;
-      }
+      return;
+    }
 
     if (!getProject) return;
 
@@ -145,7 +154,7 @@ export default function ProjectSettings(props: {
           <p>Fetching your project info...</p>
         </div>
       )}
-      {getProject !== undefined && getProject._id && (
+      {isConfirmed && getProject !== undefined && getProject._id && (
         <div className="m-6 w-fit">
           <h1 className="text-4xl font-bold mb-6">Project Settings</h1>
           <Separator />

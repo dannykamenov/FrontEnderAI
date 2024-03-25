@@ -87,6 +87,14 @@ export default function AddTask(props: { params: { projectId: string } }) {
       return;
     }
 
+    if (me._id !== getProject.userId) {
+        return toast({
+          variant: "destructive",
+          title: "Error",
+          description: "You can't create a task in this project.",
+        });
+      }
+
     try {
       await createTask({
         projectId: getProject._id,

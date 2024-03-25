@@ -99,7 +99,7 @@ export default function Projects() {
   }
 
   return (
-    <div>
+    <div className="min-h-svh">
       <h1 className="text-6xl text-center m-10">Projects</h1>
       <div className="w-5/12 mx-auto flex">
         <div className="flex items-center rounded-lg w-full mr-4 relative">
