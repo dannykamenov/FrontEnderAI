@@ -26,19 +26,27 @@ export async function getUser(
 }
 
 export const createUser = internalMutation({
-  args: { tokenIdentifier: v.string(), name: v.string(), image: v.string() },
+  args: {
+    tokenIdentifier: v.string(),
+    userId: v.string(),
+    name: v.string(),
+    email: v.string(),
+    image: v.string(),
+  },
   async handler(ctx, args) {
     await ctx.db.insert("users", {
       tokenIdentifier: args.tokenIdentifier,
+      userId: args.userId,
       orgIds: [],
       name: args.name,
+      email: args.email,
       image: args.image,
     });
   },
 });
 
 export const updateUser = internalMutation({
-  args: { tokenIdentifier: v.string(), name: v.string(), image: v.string() },
+  args: { tokenIdentifier: v.string(),userId: v.string(), name: v.string(), image: v.string() },
   async handler(ctx, args) {
     const user = await ctx.db
       .query("users")
@@ -110,7 +118,7 @@ export const getMe = query({
     if (!identity) {
       return null;
     }
-    
+
     const user = await getUser(ctx, identity.tokenIdentifier);
 
     if (!user) {
@@ -129,3 +137,49 @@ export const deleteUser = internalMutation({
     await ctx.db.delete(user._id);
   },
 });
+
+
+export const updateSubscription = internalMutation({
+    args: {
+      subscriptionId: v.string(),
+      customer_id: v.string(),
+      userId: v.string(),
+      endsOn: v.number(),
+    },
+    handler: async (ctx, args) => {
+      const user = await ctx.db
+        .query("users")
+        .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+        .first();
+  
+      if (!user) {
+        throw new Error("no user found with that user id");
+      }
+  
+      await ctx.db.patch(user._id, {
+        sub_id: args.subscriptionId,
+        customer_id: args.customer_id,
+        ends_on: args.endsOn,
+      });
+    },
+  });
+  
+  export const updateSubscriptionBySubId = internalMutation({
+    args: { subscriptionId: v.string(), endsOn: v.number() },
+    handler: async (ctx, args) => {
+      const user = await ctx.db
+        .query("users")
+        .withIndex("by_sub_id", (q) =>
+          q.eq("sub_id", args.subscriptionId)
+        )
+        .first();
+  
+      if (!user) {
+        throw new Error("no user found with that user id");
+      }
+  
+      await ctx.db.patch(user._id, {
+        ends_on: args.endsOn,
+      });
+    },
+  });

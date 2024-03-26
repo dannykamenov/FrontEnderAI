@@ -26,15 +26,18 @@ http.route({
         case "user.created":
           await ctx.runMutation(internal.users.createUser, {
             tokenIdentifier: `https://${process.env.CLERK_HOSTNAME}|${result.data.id}`,
+            userId: result.data.id,
             name: `${result.data.first_name ?? ""} ${
               result.data.last_name ?? ""
             }`,
+            email: result.data.email_addresses[0].email_address,
             image: result.data.image_url,
           });
           break;
         case "user.updated":
           await ctx.runMutation(internal.users.updateUser, {
             tokenIdentifier: `https://${process.env.CLERK_HOSTNAME}|${result.data.id}`,
+            userId: result.data.id,
             name: `${result.data.first_name ?? ""} ${
               result.data.last_name ?? ""
             }`,
@@ -73,5 +76,28 @@ http.route({
     }
   }),
 });
+
+http.route({
+    path: "/stripe",
+    method: "POST",
+    handler: httpAction(async (ctx, request) => {
+      const signature = request.headers.get("stripe-signature") as string;
+  
+      const result = await ctx.runAction(internal.stripe.fulfill, {
+        payload: await request.text(),
+        signature,
+      });
+  
+      if (result.success) {
+        return new Response(null, {
+          status: 200,
+        });
+      } else {
+        return new Response("Webhook Error", {
+          status: 400,
+        });
+      }
+    }),
+  });
 
 export default http;
