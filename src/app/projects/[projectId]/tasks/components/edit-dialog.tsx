@@ -114,14 +114,14 @@ export default function EditTask(props: { task: Task }) {
 
       toast({
         variant: "success",
-        title: "Task Created",
+        title: "Task Updated",
         description:
           "Congratulations! Your task has been updated successfully!",
       });
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Task Creation Failed",
+        title: "Task Update Failed",
         description: "Your task could not be updated, please try again later.",
       });
     }
