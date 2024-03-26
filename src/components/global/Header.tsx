@@ -111,7 +111,7 @@ const Header = () => {
           </SignedOut>
           <SignedIn>
             <Button variant="cta">
-              <Link href="/dashboard">Dashboard</Link>
+              <Link href="/projects">Dashboard</Link>
             </Button>
             <div className="pl-5 pr-5 flex gap-2">
               {/* <OrganizationSwitcher /> - only when paid */}
