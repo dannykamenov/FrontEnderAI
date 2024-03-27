@@ -5,7 +5,8 @@ import { useUser } from "@clerk/nextjs";
 import { useAction, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useRouter } from "next/navigation";
-import { Check } from "lucide-react";
+import { Check, Zap } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export default function Subscriptions() {
   /*     const {user} = useUser();
@@ -38,7 +39,7 @@ export default function Subscriptions() {
         </p>
       </div>
       <div className="flex flex-row items-center mt-10 w-4/6 mx-auto justify-between">
-        <div className="flex flex-col items-center basis-1/3 text-center">
+        <div className="flex flex-col items-center basis-auto px-5 text-center py-10 mx-5 dark:bg-gradient-to-t dark:from-slate-500 dark:to-black rounded-xl border-2 border-black dark:border-white bg-gradient-to-t from-slate-500 to-white">
           <div className="text-center">
             <h2 className="text-6xl font-semibold">
               {" "}
@@ -46,53 +47,110 @@ export default function Subscriptions() {
             </h2>
             <h2 className="text-base font-semibold">PER MONTH</h2>
           </div>
-          <h2 className="text-2xl font-semibold">Free</h2>
+          <h2 className="text-2xl font-semibold mt-4 mb-4">Free</h2>
           <div>
-            <p className="flex items-center"><Check />Manage 1 Project</p>
-            <p className="flex items-center"><Check />Access to Tasks</p>
-            <p className="flex items-center"><Check />Access to Documentation</p>
+            <p className="flex items-center">
+              <Check className="w-5 h-5 mr-2" />
+              Manage 1 Project
+            </p>
+            <p className="flex items-center">
+              <Check className="w-5 h-5 mr-2" />
+              Access to Tasks
+            </p>
+            <p className="flex items-center">
+              <Check className="w-5 h-5 mr-2" />
+              Access to Documentation
+            </p>
           </div>
-          <p className="text-slate-400 mt-2">Get started with our free plan</p>
-          <Button className="mt-2">Subscribe</Button>
+          <Button className="mt-4 w-9/12" variant="cta">
+            Subscribe
+          </Button>
+          <p className=" mt-2"> No subscription required!</p>
         </div>
-        <div className="flex flex-col items-center basis-1/3 text-center">
+        <div className="flex flex-col items-center basis-auto px-10 text-center py-10 mx-5 dark:bg-gradient-to-t dark:from-slate-500 dark:to-black rounded-xl border-2 border-black dark:border-white bg-gradient-to-t from-slate-500 to-white relative">
+            <Badge variant="cta" className="absolute top-3 right-3">Recommended</Badge>
           <div className="text-center">
             <h2 className="text-6xl font-semibold">
               {" "}
-              <sup className="-mr-3">$</sup> 20
+              <sup className="-mr-3">$</sup> 15
             </h2>
             <h2 className="text-base font-semibold">PER MONTH</h2>
           </div>
-          <h2 className="text-2xl font-semibold">Pro</h2>
+          <h2 className="text-2xl font-semibold mt-4 mb-4">Pro</h2>
           <div>
-            <p>Manage All Your Project</p>
-            <p>Access to Tasks</p>
-            <p>Access to Documentation</p>
+            <p className="flex items-center">
+              <Check className="w-5 h-5 mr-2" />
+              Manage All Your Project
+            </p>
+            <p className="flex items-center">
+              <Check className="w-5 h-5 mr-2" />
+              Access to Tasks
+            </p>
+            <p className="flex items-center">
+              <Check className="w-5 h-5 mr-2" />
+              Access to Documentation
+            </p>
+            <p className="flex items-center">
+              <Check className="w-5 h-5 mr-2" />
+              Access to Analytics
+            </p>
+            <p className="flex items-center">
+              <Check className="w-5 h-5 mr-2" />
+              Access to QuickStart
+            </p>
+            <p className="flex items-center">
+              <Check className="w-5 h-5 mr-2" />
+              Full AI Tools Access
+            </p>
+            <p className="flex items-center">
+              <Check className="w-5 h-5 mr-2" />
+              Priority Support
+            </p>
+            <p className="flex items-center">
+              <Check className="w-5 h-5 mr-2" />
+              Access to ALL Future Updates
+            </p>
           </div>
-          <p className="text-slate-400 mt-2">
-            Get access to all our premium features
-          </p>
-          <Button className="mt-2">Subscribe</Button>
+          <Button className="mt-4 w-9/12" variant="cta">
+            Subscribe
+          </Button>
+          <p className=" mt-2">Our Best Deal <br /> 7-day free trial included. </p>
         </div>
-        <div className="flex flex-col items-center basis-1/3 text-center">
+        <div className="flex flex-col items-center basis-auto px-5 text-center py-10 mx-5 dark:bg-gradient-to-t dark:from-slate-500 dark:to-black rounded-xl border-2 border-black dark:border-white bg-gradient-to-t from-slate-500 to-white">
           <div className="text-center">
             <h2 className="text-6xl font-semibold">
               {" "}
-              <sup className="-mr-3">$</sup> 10
+              <sup className="-mr-3">$</sup> 5
             </h2>
             <h2 className="text-base font-semibold">PER MONTH</h2>
           </div>
-          <h2 className="text-2xl font-semibold">Premium</h2>
+          <h2 className="text-2xl font-semibold mt-4 mb-4">Premium</h2>
           <div>
-            <p>Manage up to 5 Project</p>
-            <p>Access to Tasks</p>
-            <p>Access to Documentation</p>
-            <p>Limited AI Tools Access</p>
+            <p className="flex items-center">
+              <Check className="w-5 h-5 mr-2" />
+              Manage up to 5 Project
+            </p>
+            <p className="flex items-center">
+              <Check className="w-5 h-5 mr-2" />
+              Access to Tasks
+            </p>
+            <p className="flex items-center">
+              <Check className="w-5 h-5 mr-2" />
+              Access to Documentation
+            </p>
+            <p className="flex items-center">
+              <Check className="w-5 h-5 mr-2" />
+              Access to Analytics
+            </p>
+            <p className="flex items-center">
+              <Check className="w-5 h-5 mr-2" />
+              Limited AI Tools Access
+            </p>
           </div>
-          <p className="text-slate-400 mt-2">
-            Get access to all our premium features
-          </p>
-          <Button className="mt-2">Subscribe</Button>
+          <Button className="mt-4 w-9/12" variant="cta">
+            Subscribe
+          </Button>
+          <p className=" mt-2">Great For Starters <br /> 7-day free trial included. </p>
         </div>
       </div>
     </div>
