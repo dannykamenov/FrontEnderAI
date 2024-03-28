@@ -12,10 +12,9 @@ type Metadata = {
 };
 
 export const pay = action({
-  args: {},
-  handler: async (ctx) => {
+  args: { productId: v.string(), plan_name: v.string()},
+  handler: async (ctx, args) => {
     const user = await ctx.auth.getUserIdentity();
-
     if (!user) {
       throw new Error("you must be logged in to subscribe");
     }
@@ -29,10 +28,11 @@ export const pay = action({
       apiVersion: "2023-10-16",
     });
     const session = await stripe.checkout.sessions.create({
-      line_items: [{ price: process.env.PRICE_ID!, quantity: 1 }],
+      line_items: [{ price: args.productId, quantity: 1 }],
       customer_email: user.email,
       metadata: {
         userId: user.subject,
+        plan_name: args.plan_name,
       },
       mode: "subscription",
       success_url: `${domain}`,
@@ -68,6 +68,7 @@ export const fulfill = internalAction({
         );
 
         const userId = completedEvent.metadata.userId as Id<"users">;
+        const plan_name = completedEvent.metadata.plan_name as string;
 
         await ctx.runMutation(internal.users.updateSubscription, {
           userId,
@@ -75,10 +76,11 @@ export const fulfill = internalAction({
           subscriptionId: subscription.id,
           endsOn: subscription.current_period_end * 1000,
           sub_status: subscription.status,
+          plan_name,
         });
       }
 
-/*       if (event.type === "invoice.payment_succeeded") {
+      /*       if (event.type === "invoice.payment_succeeded") {
         const subscription = await stripe.subscriptions.retrieve(
           completedEvent.subscription as string
         );
@@ -89,17 +91,16 @@ export const fulfill = internalAction({
         });
       } */
 
-      if(event.type === "customer.subscription.deleted") {
+      if (event.type === "customer.subscription.deleted") {
         const subscription = await stripe.subscriptions.retrieve(
-            completedEvent.id as string
+          completedEvent.id as string
         );
-        
+
         await ctx.runMutation(internal.users.cancel, {
-            subscriptionId: subscription.id,
-            sub_status: subscription.status,
+          subscriptionId: subscription.id,
+          sub_status: subscription.status,
         });
       }
-
 
       return { success: true };
     } catch (err) {
@@ -115,7 +116,6 @@ export const cancel = action({
     const stripe = new Stripe(process.env.STRIPE_KEY!, {
       apiVersion: "2023-10-16",
     });
-
     try {
       await stripe.subscriptions.cancel(args.subscriptionId);
 

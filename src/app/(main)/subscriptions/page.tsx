@@ -12,8 +12,12 @@ export default function Subscriptions() {
     const pay = useAction(api.stripe.pay);
     const router = useRouter();
 
-    const handlePay = async () => {
-        const url = await pay();
+    const handlePay = async (productId: string) => {
+        const plan_name = productId === process.env.NEXT_PUBLIC_PRO_PLAN! ? "pro" : "premium";
+        const url = await pay({
+            productId: productId,
+            plan_name: plan_name
+        });
         router.push(url);
     }
 
@@ -114,7 +118,7 @@ export default function Subscriptions() {
               Access to ALL Future Updates
             </p>
           </div>
-          <Button className="mt-4 w-9/12" variant="cta" onClick={handlePay}>
+          <Button className="mt-4 w-9/12" variant="cta" onClick={() => handlePay(process.env.NEXT_PUBLIC_PRO_PLAN!)}>
             Subscribe
           </Button>
           <p className=" mt-2">Our Best Deal <br /> 7-day free trial included. </p>
@@ -150,9 +154,9 @@ export default function Subscriptions() {
               Limited AI Tools Access
             </p>
           </div>
-          <Button className="mt-4 w-9/12" variant="cta">
+        <Button className="mt-4 w-9/12" variant="cta" onClick={() => handlePay(process.env.NEXT_PUBLIC_PREMIUM_PLAN!)}>
             Subscribe
-          </Button>
+        </Button>
           <p className=" mt-2">Great For Starters <br /> 7-day free trial included. </p>
         </div>
       </div>

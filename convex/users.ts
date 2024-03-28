@@ -161,6 +161,7 @@ export const updateSubscription = internalMutation({
       userId: v.string(),
       endsOn: v.number(),
       sub_status: v.string(),
+      plan_name: v.string(),
     },
     handler: async (ctx, args) => {
       const user = await ctx.db
@@ -177,6 +178,7 @@ export const updateSubscription = internalMutation({
         customer_id: args.customer_id,
         ends_on: args.endsOn,
         sub_status: args.sub_status,
+        plan_name: args.plan_name,
       });
     },
   });
@@ -217,7 +219,8 @@ export const updateSubscription = internalMutation({
   
       await ctx.db.patch(user._id, {
         sub_status: args.sub_status,
-        ends_on: 0,
+        ends_on: undefined,
+        plan_name: undefined,
       });
     },
   });

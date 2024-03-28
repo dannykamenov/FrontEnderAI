@@ -15,6 +15,7 @@ export default defineSchema({
     sub_id: v.optional(v.string()),
     ends_on: v.optional(v.number()),
     sub_status: v.optional(v.string()),
+    plan_name: v.optional(v.string()),
     orgIds: v.array(
       v.object({
         orgId: v.string(),
