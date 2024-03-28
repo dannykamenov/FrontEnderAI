@@ -87,7 +87,7 @@ const Header = () => {
             About
           </Link>
           <Link
-            href="/"
+            href="/subscriptions"
             className="p-2 hover:text-slate-400 hover:transition-all"
           >
             Pricing

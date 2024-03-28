@@ -2,33 +2,36 @@
 
 import { Button } from "@/components/ui/button";
 import { useUser } from "@clerk/nextjs";
-import { useAction, useMutation } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useRouter } from "next/navigation";
 import { Check, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function Subscriptions() {
-  /*     const {user} = useUser();
     const pay = useAction(api.stripe.pay);
     const router = useRouter();
-    const userInfo = () => {
-        console.log(user?.id)
-    }
 
-    const subscribe = async () => {
+    const handlePay = async () => {
         const url = await pay();
         router.push(url);
     }
 
-    return (
-        <div>
-        <h1>Dashboard</h1>
-        <p>Welcome to the dashboard</p>
-        <Button onClick={userInfo}>User Info</Button>
-        <Button onClick={subscribe}>Subscribe</Button>
-        </div>
-    ); */
+    const user = useQuery(api.users.getMe);
+    const cancel = useAction(api.stripe.cancel);
+
+    const handleInfo = async () => {
+        console.log(user);
+    };
+
+    const handleCancel = async () => {
+        if(!user || !user.sub_id) return;
+
+        const result = await cancel({
+            subscriptionId: user.sub_id
+        });
+
+    };
 
   return (
     <div className="min-h-screen dark:bg-grid-white/[0.03] bg-grid-black/[0.03]">
@@ -111,7 +114,7 @@ export default function Subscriptions() {
               Access to ALL Future Updates
             </p>
           </div>
-          <Button className="mt-4 w-9/12" variant="cta">
+          <Button className="mt-4 w-9/12" variant="cta" onClick={handlePay}>
             Subscribe
           </Button>
           <p className=" mt-2">Our Best Deal <br /> 7-day free trial included. </p>
@@ -153,6 +156,9 @@ export default function Subscriptions() {
           <p className=" mt-2">Great For Starters <br /> 7-day free trial included. </p>
         </div>
       </div>
+      <Button className="mt-10" variant="cta" onClick={handleCancel}>Cancel</Button>
+      <Button className="mt-10" variant="cta" onClick={handleInfo}>Info</Button>
+
     </div>
   );
 }

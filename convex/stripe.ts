@@ -74,10 +74,11 @@ export const fulfill = internalAction({
           customer_id: subscription.customer as string,
           subscriptionId: subscription.id,
           endsOn: subscription.current_period_end * 1000,
+          sub_status: subscription.status,
         });
       }
 
-      if (event.type === "invoice.payment_succeeded") {
+/*       if (event.type === "invoice.payment_succeeded") {
         const subscription = await stripe.subscriptions.retrieve(
           completedEvent.subscription as string
         );
@@ -86,7 +87,37 @@ export const fulfill = internalAction({
           subscriptionId: subscription.items.data[0]?.price.id,
           endsOn: subscription.current_period_end * 1000,
         });
+      } */
+
+      if(event.type === "customer.subscription.deleted") {
+        const subscription = await stripe.subscriptions.retrieve(
+            completedEvent.id as string
+        );
+        
+        await ctx.runMutation(internal.users.cancel, {
+            subscriptionId: subscription.id,
+            sub_status: subscription.status,
+        });
       }
+
+
+      return { success: true };
+    } catch (err) {
+      console.error(err);
+      return { success: false, error: (err as { message: string }).message };
+    }
+  },
+});
+
+export const cancel = action({
+  args: { subscriptionId: v.string() },
+  handler: async (ctx, args) => {
+    const stripe = new Stripe(process.env.STRIPE_KEY!, {
+      apiVersion: "2023-10-16",
+    });
+
+    try {
+      await stripe.subscriptions.cancel(args.subscriptionId);
 
       return { success: true };
     } catch (err) {

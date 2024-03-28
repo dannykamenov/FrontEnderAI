@@ -116,17 +116,32 @@ export const getMe = query({
     const identity = await ctx.auth.getUserIdentity();
 
     if (!identity) {
-      return null;
+        return null;
     }
 
     const user = await getUser(ctx, identity.tokenIdentifier);
 
     if (!user) {
-      return null;
+        return null;
     }
 
     return user;
   },
+});
+
+export const resetSubscription = internalMutation({
+    args: { tokenIdentifier: v.string() },
+    async handler(ctx, args) {
+        const user = await getUser(ctx, args.tokenIdentifier);
+    
+        await ctx.db.patch(user._id, {
+        sub_id: "",
+        customer_id: "",
+        ends_on: 0,
+        sub_status: "",
+        });
+    },
+    
 });
 
 export const deleteUser = internalMutation({
@@ -145,6 +160,7 @@ export const updateSubscription = internalMutation({
       customer_id: v.string(),
       userId: v.string(),
       endsOn: v.number(),
+      sub_status: v.string(),
     },
     handler: async (ctx, args) => {
       const user = await ctx.db
@@ -160,6 +176,7 @@ export const updateSubscription = internalMutation({
         sub_id: args.subscriptionId,
         customer_id: args.customer_id,
         ends_on: args.endsOn,
+        sub_status: args.sub_status,
       });
     },
   });
@@ -180,6 +197,27 @@ export const updateSubscription = internalMutation({
   
       await ctx.db.patch(user._id, {
         ends_on: args.endsOn,
+      });
+    },
+  });
+
+  export const cancel = internalMutation({
+    args: { subscriptionId: v.string(), sub_status: v.string()},
+    handler: async (ctx, args) => {
+      const user = await ctx.db
+        .query("users")
+        .withIndex("by_sub_id", (q) =>
+          q.eq("sub_id", args.subscriptionId)
+        )
+        .first();
+  
+      if (!user) {
+        throw new Error("no user found with that user id");
+      }
+  
+      await ctx.db.patch(user._id, {
+        sub_status: args.sub_status,
+        ends_on: 0,
       });
     },
   });
